@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Auditor Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Заголовок -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-broom"></i>
+                <h1>Telegram Auditor</h1>
+            </div>
+            <div class="user-info" id="userInfo">
+                <i class="fas fa-user"></i>
+                <span>Загрузка...</span>
+            </div>
+        </header>
+
+        <!-- Главный экран -->
+        <div class="screen" id="mainScreen">
+            <div class="card welcome-card">
+                <i class="fas fa-star main-icon"></i>
+                <h2>Очистка Telegram</h2>
+                <p>Проанализируйте и очистите свои каналы, группы и боты</p>
+            </div>
+
+            <div class="selection-cards">
+                <div class="selection-card" onclick="selectType('channels')">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <h3>Каналы</h3>
+                    <p>Анализ и очистка каналов</p>
+                    <div class="badge" id="channelsCount">0</div>
+                </div>
+
+                <div class="selection-card" onclick="selectType('groups')">
+                    <i class="fas fa-users"></i>
+                    <h3>Группы</h3>
+                    <p>Анализ и очистка групп</p>
+                    <div class="badge" id="groupsCount">0</div>
+                </div>
+
+                <div class="selection-card" onclick="selectType('bots')">
+                    <i class="fas fa-robot"></i>
+                    <h3>Боты</h3>
+                    <p>Анализ и очистка ботов</p>
+                    <div class="badge" id="botsCount">0</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="requestChats()">
+                <i class="fas fa-play"></i> Начать анализ
+            </button>
+
+            <!-- Статистика -->
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Проанализировано: <b id="analyzedCount">0</b></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-trash"></i>
+                    <span>Очищено: <b id="cleanedCount">0</b></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран анализа -->
+        <div class="screen" id="analysisScreen" style="display: none;">
+            <div class="analysis-header">
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Анализ <span id="currentType">каналов</span></h2>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <div class="analysis-results" id="resultsContainer">
+                <!-- Результаты будут здесь -->
+            </div>
+
+            <button class="btn-success" onclick="cleanSelected()" id="cleanBtn" disabled>
+                <i class="fas fa-broom"></i> Очистить выбранное
+            </button>
+        </div>
+
+        <!-- Рекламные каналы -->
+        <div class="recommendations">
+            <h3><i class="fas fa-fire"></i> Рекомендуем подписаться</h3>
+            <div class="ad-channels" id="adChannels">
+                <!-- Рекламные каналы будут здесь -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

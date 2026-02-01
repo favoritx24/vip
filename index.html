@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>TG Auditor Pro 2026 | Clean & Optimize Telegram</title>
+    <meta name="description" content="Professional Telegram chat analyzer. Clean dead channels, find duplicates, save time and traffic.">
+    <meta name="keywords" content="Telegram cleaner, chat analyzer, auditor, чистка телеграм, анализ каналов">
+    <meta property="og:title" content="TG Auditor Pro 2026">
+    <meta property="og:description" content="Professional analysis of your Telegram chats">
+    <meta property="og:image" content="https://yourdomain.com/static/og-image.jpg">
+    
+    <!-- Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Apple-style Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>TG Auditor Pro</span>
+                    <sup class="badge">2026</sup>
+                </h1>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Step 1: Selection -->
+            <section id="step1" class="step active">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 data-i18n="select_chats">Выберите чаты для анализа</h2>
+                </div>
+                
+                <div class="categories">
+                    <div class="category-card" data-type="channels">
+                        <div class="category-icon">
+                            <svg class="icon"><use xlink:href="#icon-channel"></use></svg>
+                        </div>
+                        <h3 data-i18n="channels">Каналы</h3>
+                        <p data-i18n="channels_desc">Публичные и приватные каналы</p>
+                    </div>
+                    
+                    <div class="category-card" data-type="groups">
+                        <div class="category-icon">
+                            <svg class="icon"><use xlink:href="#icon-group"></use></svg>
+                        </div>
+                        <h3 data-i18n="groups">Группы</h3>
+                        <p data-i18n="groups_desc">Групповые чаты и сообщества</p>
+                    </div>
+                    
+                    <div class="category-card" data-type="bots">
+                        <div class="category-icon">
+                            <svg class="icon"><use xlink:href="#icon-bot"></use></svg>
+                        </div>
+                        <h3 data-i18n="bots">Боты</h3>
+                        <p data-i18n="bots_desc">Автоматизированные боты</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="selectAllBtn" class="btn btn-primary" data-i18n="select_all">
+                        <i class="fas fa-layer-group"></i>
+                        Выбрать все
+                    </button>
+                    <button id="manualSelectBtn" class="btn btn-secondary" data-i18n="manual_select">
+                        <i class="fas fa-hand-pointer"></i>
+                        Выбрать вручную
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 2: Analysis -->
+            <section id="step2" class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 data-i18n="analysis">Анализ выбранных чатов</h2>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+                
+                <div class="analysis-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon dead">
+                            <i class="fas fa-skull-crossbones"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 data-i18n="dead_chats">Мертвые чаты</h4>
+                            <div class="stat-value" id="deadCount">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon duplicate">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 data-i18n="duplicates">Дубликаты</h4>
+                            <div class="stat-value" id="duplicateCount">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon toxic">
+                            <i class="fas fa-radiation"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 data-i18n="toxic_chats">Токсичные</h4>
+                            <div class="stat-value" id="toxicCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Results -->
+            <section id="step3" class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 data-i18n="results">Результаты анализа</h2>
+                </div>
+                
+                <div class="results-summary">
+                    <div class="result-card total">
+                        <h3 data-i18n="total_analyzed">Всего проанализировано</h3>
+                        <div class="result-value" id="totalChats">0</div>
+                        <div class="result-label" data-i18n="chats">чатов</div>
+                    </div>
+                    
+                    <div class="result-card time">
+                        <h3 data-i18n="time_saved">Сэкономлено времени</h3>
+                        <div class="result-value" id="timeSaved">0</div>
+                        <div class="result-label" data-i18n="hours">часов</div>
+                    </div>
+                    
+                    <div class="result-card traffic">
+                        <h3 data-i18n="traffic_saved">Сэкономлено трафика</h3>
+                        <div class="result-value" id="trafficSaved">0</div>
+                        <div class="result-label" data-i18n="mb">МБ</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="cleanBtn" class="btn btn-danger" data-i18n="clean_all">
+                        <i class="fas fa-broom"></i>
+                        Очистить всё
+                    </button>
+                    <button id="shareBtn" class="btn btn-success" data-i18n="share_results">
+                        <i class="fas fa-share-alt"></i>
+                        Поделиться
+                    </button>
+                </div>
+                
+                <!-- Recommendations -->
+                <div class="recommendations" id="recommendations">
+                    <h3 data-i18n="useful_replacements">Полезные замены</h3>
+                    <div class="recommendations-list" id="recommendationsList">
+                        <!-- Реклама будет загружена здесь -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-info">
+                <p data-i18n="security_note">
+                    <i class="fas fa-lock"></i>
+                    Ваши данные не передаются. Анализ происходит локально.
+                </p>
+            </div>
+            <div class="footer-links">
+                <a href="#" data-i18n="privacy">Конфиденциальность</a>
+                <span class="separator">•</span>
+                <a href="#" data-i18n="terms">Условия</a>
+                <span class="separator">•</span>
+                <a href="#" data-i18n="support">Поддержка</a>
+            </div>
+        </footer>
+
+        <!-- SVG Icons -->
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="icon-channel" viewBox="0 0 24 24">
+                <path d="M2 6L12 1L22 6V18L12 23L2 18V6Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M7 9L12 12L17 9" stroke="currentColor" stroke-width="2" fill="none"/>
+            </symbol>
+            <symbol id="icon-group" viewBox="0 0 24 24">
+                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M3 21V17C3 14.7909 4.79086 13 7 13H11C13.2091 13 15 14.7909 15 17V21" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M19 21V17C18.9998 16.1137 18.7044 15.2528 18.1614 14.5523C17.6185 13.8519 16.858 13.3516 16 13.126" stroke="currentColor" stroke-width="2" fill="none"/>
+            </symbol>
+            <symbol id="icon-bot" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="15" cy="7" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="9" cy="16" r="1" fill="currentColor"/>
+                <circle cx="15" cy="16" r="1" fill="currentColor"/>
+            </symbol>
+        </svg>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>

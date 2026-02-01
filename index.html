@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TG Auditor Pro - Professional Telegram Cleaner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Professional CSS with SVG icons */
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
             --secondary: #8b5cf6;
             --success: #10b981;
             --danger: #ef4444;
@@ -18,30 +25,972 @@
             --info: #3b82f6;
             --dark: #111827;
             --darker: #0f172a;
+            --dark-light: #1e293b;
             --light: #f8fafc;
             --gray: #6b7280;
+            --gray-light: #9ca3af;
             --border: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(30, 41, 59, 0.7);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --radius: 16px;
+            --radius-sm: 8px;
         }
         
-        /* Добавь профессиональные стили как в предыдущей версии, но с SVG */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.5;
+            padding: 20px;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
         
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* TYPOGRAPHY */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        h2 {
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+        
+        h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            color: var(--gray-light);
+        }
+        
+        .small {
+            font-size: 14px;
+        }
+        
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .title {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+        
+        .language-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .card-title .icon {
+            width: 28px;
+            height: 28px;
+            color: var(--primary);
+        }
+        
+        .card-description {
+            color: var(--gray-light);
+            font-size: 15px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        
+        /* BUTTONS */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn:hover {
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn.loading {
+            pointer-events: none;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+        
+        .btn-danger {
+            background: linear-gradient(90deg, var(--danger), #dc2626);
+        }
+        
+        .btn-success {
+            background: linear-gradient(90deg, var(--success), #059669);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-small {
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+        }
+        
+        /* SELECTION COUNTER */
+        .selection-counter {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .counter-badge {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 18px;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        /* ACCESS NOTICE */
+        .access-notice {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .access-title {
+            color: #fca5a5;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        /* LOADING */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            margin-bottom: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--light);
+        }
+        
+        .loading-subtext {
+            font-size: 14px;
+            color: var(--gray-light);
+            line-height: 1.6;
+            max-width: 300px;
+        }
+        
+        /* RESULTS */
+        .results-section {
+            margin-top: 24px;
+        }
+        
+        .results-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-light);
+        }
+        
+        .result-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+        
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .channel-info {
+            overflow: hidden;
+        }
+        
+        .channel-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--light);
+        }
+        
+        .channel-desc {
+            font-size: 13px;
+            color: var(--gray-light);
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        
+        .channel-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .channel-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .channel-status {
+            text-align: center;
+        }
+        
+        .channel-reason {
+            font-size: 11px;
+            margin-top: 6px;
+            color: var(--gray);
+            max-width: 120px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .channel-score {
+            text-align: center;
+        }
+        
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .badge-dead {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .badge-spam {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .badge-good {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-inactive {
+            background: rgba(107, 114, 128, 0.2);
+            color: #d1d5db;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+        
+        .badge-toxic {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+        
+        .badge-duplicate {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .score-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-weight: 700;
+            font-size: 12px;
+            border: 2px solid;
+        }
+        
+        /* PROGRESS */
+        .progress-container {
+            margin: 24px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+        
+        /* STATS */
+        .stats-grid {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* RECOMMENDATIONS */
+        .recommended-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .recommended-info {
+            flex: 1;
+            margin-right: 16px;
+        }
+        
+        .recommended-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--light);
+        }
+        
+        .recommended-desc {
+            font-size: 13px;
+            color: var(--gray-light);
+            margin-bottom: 10px;
+        }
+        
+        .recommended-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .recommended-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .recommended-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+        
+        /* SUCCESS */
+        .success-card {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 24px;
+            color: var(--success);
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        
+        /* ACCESS STATUS */
+        .access-status {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .access-granted {
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .access-restricted {
+            color: var(--warning);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .access-progress {
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+        
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .footer p {
+            margin-bottom: 8px;
+        }
+        
+        /* ERROR */
+        .error-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 24px;
+            color: var(--danger);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .result-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 12px;
+            }
+            
+            .results-header {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 16px 20px;
+            }
+            
+            .recommended-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .recommended-info {
+                margin-right: 0;
+                margin-bottom: 12px;
+            }
+            
+            .recommended-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* ICONS */
         .icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
         }
         
         .icon svg {
             width: 100%;
             height: 100%;
         }
+        
+        /* UTILITIES */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-0 {
+            margin-bottom: 0;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        /* ANIMATIONS */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
     </style>
 </head>
 <body>
-    <!-- Professional interface with SVG icons -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            <h1 class="title" id="title">TG Auditor Pro</h1>
+            <p class="subtitle" id="subtitle">Professional Telegram Cleaner</p>
+            <div class="language-badge" id="languageBadge">
+                <span class="icon">${ICONS.globe}</span>
+                <span id="languageText">English</span>
+            </div>
+        </div>
+
+        <!-- Access Status -->
+        <div class="access-status" id="accessStatus">
+            <!-- Динамически заполняется -->
+        </div>
+
+        <!-- Step 1: Select Channels -->
+        <div class="card" id="step1">
+            <div class="card-title">
+                <span class="icon">${ICONS.channel}</span>
+                <span data-locale="step1Title">Select Channels</span>
+            </div>
+            <p class="card-description" data-locale="step1Desc">
+                Choose which Telegram channels and groups to analyze. Multiple selection available.
+            </p>
+            
+            <button class="btn btn-primary" id="selectChannelsBtn">
+                <span id="selectBtnText">SELECT CHANNELS</span>
+            </button>
+            
+            <div class="selection-counter" id="selectionCounter">
+                <span data-locale="selectedText">Selected:</span>
+                <span class="counter-badge" id="channelCount">0</span>
+                <span data-locale="channelsText">channels</span>
+            </div>
+            
+            <div class="access-notice" id="accessNotice">
+                <div class="access-title">
+                    <span class="icon">${ICONS.lock}</span>
+                    <span data-locale="mandatoryTitle">ACCESS REQUIREMENTS</span>
+                </div>
+                <p data-locale="mandatoryText">To access all features, you need to complete requirements:</p>
+                <button class="btn btn-small btn-danger" id="showRequirementsBtn" data-locale="showMandatoryBtn">
+                    SHOW REQUIREMENTS
+                </button>
+            </div>
+            
+            <div style="display: none;" id="analyzeBtn">
+                <button class="btn btn-success" id="analyzeBtn">
+                    <span id="analyzeBtnText">ANALYZE</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Analysis Results -->
+        <div class="card" id="step2" style="display: none;">
+            <div class="card-title">
+                <span class="icon">${ICONS.stats}</span>
+                <span data-locale="step2Title">Analysis Results</span>
+            </div>
+            
+            <div id="analysisResults">
+                <div class="loading-container" id="loadingAnalysis">
+                    <div class="spinner"></div>
+                    <div class="loading-text" data-locale="loadingText">AI is analyzing your channels...</div>
+                    <div class="loading-subtext" id="loadingSubtext">
+                        <!-- Динамически заполняется -->
+                    </div>
+                </div>
+                
+                <div class="results-section" id="resultsSection" style="display: none;">
+                    <div class="results-header">
+                        <div data-locale="channel">Channel</div>
+                        <div data-locale="status">Status</div>
+                        <div data-locale="score">Score</div>
+                    </div>
+                    <div id="resultsList"></div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span data-locale="cleanText">Clean:</span>
+                            <span id="cleanPercent">0%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-danger" id="cleanupBtn" style="display: none;">
+                        <span id="cleanupBtnText">CLEAN SELECTED</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Buttons -->
+        <div class="btn-group">
+            <button class="btn btn-secondary" id="inviteFriendsBtn">
+                <span id="inviteFriendsBtn">INVITE FRIENDS</span>
+            </button>
+            <button class="btn btn-secondary" id="shareBotBtn">
+                <span id="shareBotBtn">SHARE BOT</span>
+            </button>
+            <button class="btn btn-secondary" id="myReferralsBtn">
+                <span id="myReferralsBtn">MY REFERRALS</span>
+            </button>
+        </div>
+
+        <!-- Step 3: Recommended Channels -->
+        <div class="card" id="step3">
+            <div class="card-title">
+                <span class="icon">${ICONS.star}</span>
+                <span data-locale="step3Title">Recommended Channels</span>
+            </div>
+            <p class="card-description" data-locale="step3Desc">
+                Quality channels recommended for you based on your interests
+            </p>
+            <div id="recommendedChannels">
+                <!-- Динамически заполняется -->
+            </div>
+        </div>
+
+        <!-- Step 4: Statistics -->
+        <div class="card" id="step4">
+            <div class="card-title">
+                <span class="icon">${ICONS.stats}</span>
+                <span data-locale="step4Title">Your Statistics</span>
+            </div>
+            
+            <div id="statsContainer">
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalChannels">0</div>
+                        <div class="stat-label" data-locale="totalLabel">Total</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ef4444" id="deadChannels">0</div>
+                        <div class="stat-label" data-locale="deadLabel">Dead</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #f59e0b" id="spamChannels">0</div>
+                        <div class="stat-label" data-locale="spamLabel">Spam</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #8b5cf6" id="toClean">0</div>
+                        <div class="stat-label" data-locale="cleanLabel">To Clean</div>
+                    </div>
+                </div>
+                
+                <div id="statsDefault">
+                    <p class="text-center" data-locale="statsDefaultText">
+                        Select and analyze channels to see statistics
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="card success-card" id="successCard">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <h3 id="successTitle">Cleaning Complete!</h3>
+            <p id="successMessage">Your Telegram is now cleaner and organized</p>
+            <div class="mt-20">
+                <button class="btn btn-success" id="shareResultsBtn" data-locale="shareResultsBtn">
+                    SHARE RESULTS
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p data-locale="footerText">TG Auditor Pro © 2024 | Professional Telegram Cleaner</p>
+            <p data-locale="poweredBy">Powered by AI technology</p>
+        </div>
+    </div>
+
+    <script>
+        // SVG иконки глобально доступны
+        window.ICONS = ${JSON.stringify(ICONS)};
+    </script>
+    <script src="app.js"></script>
 </body>
 </html>

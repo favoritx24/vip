@@ -1,3 +1,5 @@
+// Telegram Auditor Pro - Полная версия JavaScript
+
 // Telegram Web App
 let tg = window.Telegram.WebApp;
 let currentUser = null;
@@ -58,9 +60,26 @@ const TEXTS = {
         unselectAll: "Снять выделение",
         totalFound: "Всего найдено:",
         recommendations: "Рекомендации",
-        selectChannels: "Выбрать все каналы для анализа",
-        selectGroups: "Выбрать все группы для анализа",
-        selectBots: "Выбрать всех ботов для анализа"
+        selectChannels: "Выбрать каналы",
+        selectGroups: "Выбрать группы",
+        selectBots: "Выбрать ботов",
+        loading: "Загрузка...",
+        all: "Все",
+        sortStatus: "Сортировать по статусу",
+        sortName: "Сортировать по названию",
+        unknown: "Неизвестно",
+        unknownDesc: "❓ Статус неизвестен",
+        confirmCleaning: "Вы уверены, что хотите очистить выбранные чаты?",
+        yes: "Да",
+        no: "Нет",
+        cleaningInProgress: "Очистка в процессе...",
+        thankYou: "Спасибо за использование!",
+        inviteRequired: "Для продолжения пригласите 3 друзей",
+        unlimitedAccess: "Безлимитный доступ открыт!",
+        shareToContinue: "Поделитесь ботом, чтобы продолжить",
+        error: "Ошибка",
+        retry: "Повторить",
+        cancel: "Отмена"
     },
     en: {
         appTitle: "Telegram Auditor",
@@ -112,9 +131,26 @@ const TEXTS = {
         unselectAll: "Unselect all",
         totalFound: "Total found:",
         recommendations: "Recommendations",
-        selectChannels: "Select all channels for analysis",
-        selectGroups: "Select all groups for analysis",
-        selectBots: "Select all bots for analysis"
+        selectChannels: "Select channels",
+        selectGroups: "Select groups",
+        selectBots: "Select bots",
+        loading: "Loading...",
+        all: "All",
+        sortStatus: "Sort by status",
+        sortName: "Sort by name",
+        unknown: "Unknown",
+        unknownDesc: "❓ Status unknown",
+        confirmCleaning: "Are you sure you want to clean selected chats?",
+        yes: "Yes",
+        no: "No",
+        cleaningInProgress: "Cleaning in progress...",
+        thankYou: "Thank you for using!",
+        inviteRequired: "Invite 3 friends to continue",
+        unlimitedAccess: "Unlimited access unlocked!",
+        shareToContinue: "Share bot to continue",
+        error: "Error",
+        retry: "Retry",
+        cancel: "Cancel"
     }
 };
 
@@ -126,19 +162,36 @@ const REAL_NAMES = {
             "Финансы", "Здоровье", "Спорт LIVE", "Кино и Сериалы", "Музыка",
             "Путешествия", "Еда и Рецепты", "Автоновости", "Недвижимость", "Образование",
             "Психология", "Мода и Стиль", "Красота", "Игры", "Политика",
-            "Экономика", "История", "Искусство", "Фотография", "Дизайн"
+            "Экономика", "История", "Искусство", "Фотография", "Дизайн",
+            "Технологии", "Блокчейн", "Инвестиции", "Маркетинг", "Стартапы",
+            "Программирование", "Дизайн Интерьеров", "Кулинария", "Фитнес", "Йога",
+            "Автомобили", "Мотоциклы", "Велосипеды", "Рыбалка", "Охота",
+            "Садоводство", "Ремонт", "Строительство", "Архитектура", "Недвижимость",
+            "Юриспруденция", "Медицина", "Психология", "Философия", "Литература"
         ],
         groups: [
             "Работа команды", "Семья", "Друзья школы", "Университет 2023", "Коллеги офиса",
             "Фитнес клуб", "Книжный клуб", "Игровое сообщество", "Трейдеры", "Программисты",
             "Дизайнеры", "Маркетологи", "Стартапы", "Инвесторы", "Путешественники",
-            "Фотографы", "Музыканты", "Художники", "Писатели", "Блогеры"
+            "Фотографы", "Музыканты", "Художники", "Писатели", "Блогеры",
+            "Геймеры", "Криптоэнтузиасты", "Трейдеры", "Инвесторы", "Бизнесмены",
+            "Предприниматели", "Фрилансеры", "Удаленщики", "Digital Nomads", "Коучи",
+            "Психологи", "Врачи", "Юристы", "Бухгалтеры", "Менеджеры",
+            "HR специалисты", "Рекрутеры", "SMM специалисты", "Копирайтеры", "Переводчики",
+            "Учителя", "Преподаватели", "Студенты", "Абитуриенты", "Выпускники",
+            "Родители", "Мамы", "Папы", "Семьи", "Друзья"
         ],
         bots: [
             "WeatherBot", "NewsBot", "TranslateBot", "GameBot", "MusicBot",
             "SearchBot", "ConverterBot", "ReminderBot", "PollBot", "QuizBot",
             "ShopBot", "BookingBot", "CryptoBot", "StockBot", "AssistantBot",
-            "DictionaryBot", "JokeBot", "QuoteBot", "MovieBot", "RecipeBot"
+            "DictionaryBot", "JokeBot", "QuoteBot", "MovieBot", "RecipeBot",
+            "WeatherForecast", "CurrencyConverter", "UnitConverter", "TimeZoneBot", "CalculatorBot",
+            "Dictionary", "Thesaurus", "GrammarBot", "SpellCheckBot", "Translator",
+            "LanguageLearning", "VocabularyBot", "NewsAggregator", "RSSBot", "PodcastBot",
+            "RadioBot", "TVSchedule", "SportsScores", "LiveScores", "BettingOdds",
+            "LotteryResults", "HoroscopeBot", "TarotBot", "AstrologyBot", "NumerologyBot",
+            "MeditationBot", "YogaBot", "FitnessTracker", "CalorieCounter", "DietPlanner"
         ]
     },
     en: {
@@ -147,19 +200,36 @@ const REAL_NAMES = {
             "Finance", "Health", "Sports LIVE", "Movies & Series", "Music",
             "Travel", "Food & Recipes", "Auto News", "Real Estate", "Education",
             "Psychology", "Fashion & Style", "Beauty", "Games", "Politics",
-            "Economics", "History", "Art", "Photography", "Design"
+            "Economics", "History", "Art", "Photography", "Design",
+            "Technology", "Blockchain", "Investments", "Marketing", "Startups",
+            "Programming", "Interior Design", "Cooking", "Fitness", "Yoga",
+            "Cars", "Motorcycles", "Bicycles", "Fishing", "Hunting",
+            "Gardening", "Repair", "Construction", "Architecture", "Real Estate",
+            "Jurisprudence", "Medicine", "Psychology", "Philosophy", "Literature"
         ],
         groups: [
             "Work Team", "Family", "School Friends", "University 2023", "Office Colleagues",
             "Fitness Club", "Book Club", "Gaming Community", "Traders", "Programmers",
             "Designers", "Marketers", "Startups", "Investors", "Travelers",
-            "Photographers", "Musicians", "Artists", "Writers", "Bloggers"
+            "Photographers", "Musicians", "Artists", "Writers", "Bloggers",
+            "Gamers", "Crypto Enthusiasts", "Traders", "Investors", "Businessmen",
+            "Entrepreneurs", "Freelancers", "Remote Workers", "Digital Nomads", "Coaches",
+            "Psychologists", "Doctors", "Lawyers", "Accountants", "Managers",
+            "HR Specialists", "Recruiters", "SMM Specialists", "Copywriters", "Translators",
+            "Teachers", "Professors", "Students", "Applicants", "Graduates",
+            "Parents", "Moms", "Dads", "Families", "Friends"
         ],
         bots: [
             "WeatherBot", "NewsBot", "TranslateBot", "GameBot", "MusicBot",
             "SearchBot", "ConverterBot", "ReminderBot", "PollBot", "QuizBot",
             "ShopBot", "BookingBot", "CryptoBot", "StockBot", "AssistantBot",
-            "DictionaryBot", "JokeBot", "QuoteBot", "MovieBot", "RecipeBot"
+            "DictionaryBot", "JokeBot", "QuoteBot", "MovieBot", "RecipeBot",
+            "WeatherForecast", "CurrencyConverter", "UnitConverter", "TimeZoneBot", "CalculatorBot",
+            "Dictionary", "Thesaurus", "GrammarBot", "SpellCheckBot", "Translator",
+            "LanguageLearning", "VocabularyBot", "NewsAggregator", "RSSBot", "PodcastBot",
+            "RadioBot", "TVSchedule", "SportsScores", "LiveScores", "BettingOdds",
+            "LotteryResults", "HoroscopeBot", "TarotBot", "AstrologyBot", "NumerologyBot",
+            "MeditationBot", "YogaBot", "FitnessTracker", "CalorieCounter", "DietPlanner"
         ]
     }
 };
@@ -175,6 +245,7 @@ function initTelegramWebApp() {
         tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
+        tg.enableClosingConfirmation();
         console.log('Telegram Web App инициализирован');
         return true;
     } catch (error) {
@@ -188,7 +259,8 @@ function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
         userId: urlParams.get('user_id') || 'demo_user_' + Math.random().toString(36).substr(2, 9),
-        lang: urlParams.get('lang') || 'ru'
+        lang: urlParams.get('lang') || 'ru',
+        hash: urlParams.get('hash') || ''
     };
 }
 
@@ -239,6 +311,8 @@ function loadUser() {
     loadAdChannels();
     // Обновляем тексты
     updateTexts();
+    
+    console.log('Пользователь загружен:', currentUser, 'Язык:', currentLang);
 }
 
 // Загрузка статистики
@@ -255,6 +329,11 @@ function loadStats() {
     document.getElementById('cleanedChannels').textContent = stats.cleaned_channels;
     document.getElementById('cleanedGroups').textContent = stats.cleaned_groups;
     document.getElementById('cleanedBots').textContent = stats.cleaned_bots;
+    
+    // Обновляем бейджи с количеством
+    document.getElementById('channelsCount').textContent = stats.cleaned_channels > 999 ? '999+' : stats.cleaned_channels;
+    document.getElementById('groupsCount').textContent = stats.cleaned_groups > 999 ? '999+' : stats.cleaned_groups;
+    document.getElementById('botsCount').textContent = stats.cleaned_bots > 999 ? '999+' : stats.cleaned_bots;
 }
 
 // Загрузка рекламных каналов
@@ -262,27 +341,39 @@ function loadAdChannels() {
     const adChannels = currentLang === 'ru' ? [
         {
             name: "Новости IT",
-            desc: "Свежие новости технологий",
+            desc: "Свежие новости технологий и программирования",
             icon: "fas fa-laptop-code",
             link: "https://t.me/telegram"
         },
         {
             name: "Крипто аналитика",
-            desc: "Анализ рынка криптовалют",
+            desc: "Анализ рынка криптовалют и блокчейн технологий",
             icon: "fas fa-chart-line",
+            link: "https://t.me/telegram"
+        },
+        {
+            name: "Мемы дня",
+            desc: "Самые свежие и смешные мемы каждый день",
+            icon: "fas fa-laugh-squint",
             link: "https://t.me/telegram"
         }
     ] : [
         {
             name: "IT News",
-            desc: "Fresh technology news",
+            desc: "Fresh technology and programming news",
             icon: "fas fa-laptop-code",
             link: "https://t.me/telegram"
         },
         {
             name: "Crypto Analytics",
-            desc: "Cryptocurrency market analysis",
+            desc: "Cryptocurrency market and blockchain analysis",
             icon: "fas fa-chart-line",
+            link: "https://t.me/telegram"
+        },
+        {
+            name: "Memes Daily",
+            desc: "Freshest and funniest memes every day",
+            icon: "fas fa-laugh-squint",
             link: "https://t.me/telegram"
         }
     ];
@@ -325,9 +416,10 @@ function selectType(type) {
     const startBtn = document.getElementById('startAnalysisBtn');
     if (startBtn) {
         startBtn.style.display = 'flex';
-        const buttonText = type === 'channels' ? TEXTS[currentLang].selectChannels :
-                          type === 'groups' ? TEXTS[currentLang].selectGroups :
-                          TEXTS[currentLang].selectBots;
+        const texts = TEXTS[currentLang];
+        const buttonText = type === 'channels' ? texts.selectChannels :
+                          type === 'groups' ? texts.selectGroups :
+                          texts.selectBots;
         startBtn.innerHTML = `<i class="fas fa-play"></i> ${buttonText}`;
     }
     
@@ -335,53 +427,61 @@ function selectType(type) {
     document.getElementById('currentTypeText').textContent = TEXTS[currentLang][type + 'Title'].toLowerCase();
 }
 
-// Запрос ВСЕХ чатов у Telegram БЕЗ ОГРАНИЧЕНИЙ
+// Запрос чатов у Telegram
 function requestChats() {
     if (!currentType) {
         showAlert(TEXTS[currentLang].selectTypeFirst);
         return;
     }
     
-    console.log('Запрашиваем ВСЕ чаты типа:', currentType);
+    console.log('Запрашиваем чаты типа:', currentType);
     
-    // Используем системный селектор Telegram для ВЫБОРА ВСЕХ
-    if (tg && tg.requestChat) {
+    // Используем системный селектор Telegram
+    if (window.Telegram && Telegram.WebApp && Telegram.WebApp.requestChat) {
         const chatTypes = {
             'channels': ['channel'],
-            'groups': ['group'],
+            'groups': ['group', 'supergroup'],
             'bots': ['bot']
         };
         
-        tg.requestChat({
+        const requestConfig = {
             chat_types: chatTypes[currentType] || ['channel'],
             allow_multiselect: true,
             title: TEXTS[currentLang][currentType + 'Title'],
-            // Без ограничений на количество
-            max_count: 0 // 0 = без ограничений
-        }, (chat) => {
-            console.log('Получены чаты:', chat);
-            handleSelectedChats(chat);
-        });
+            max_count: 1000
+        };
+        
+        console.log('Запрос чатов с конфигом:', requestConfig);
+        
+        Telegram.WebApp.requestChat(
+            requestConfig,
+            (chat) => {
+                console.log('Получены чаты:', chat);
+                if (chat) {
+                    const chatsArray = Array.isArray(chat) ? chat : [chat];
+                    handleSelectedChats(chatsArray);
+                } else {
+                    console.log('Пользователь отменил выбор');
+                }
+            }
+        );
     } else {
-        // Симуляция для тестирования - БОЛЬШЕ чатов (50-200)
-        console.log('Telegram Web App не доступен, используем симуляцию МНОГИХ чатов');
+        // Симуляция для тестирования
+        console.log('Telegram Web App не доступен, используем симуляцию');
         simulateChatSelection();
     }
 }
 
-// Симуляция выбора БОЛЬШОГО количества чатов (без ограничений)
+// Симуляция выбора чатов (для тестирования)
 function simulateChatSelection() {
-    console.log('Симуляция выбора МНОГИХ чатов для типа:', currentType);
+    console.log('Симуляция выбора чатов для типа:', currentType);
     
-    // Генерируем случайное количество чатов от 50 до 200
-    const minChats = 50;
-    const maxChats = 200;
-    const chatCount = Math.floor(Math.random() * (maxChats - minChats + 1)) + minChats;
+    // Генерируем случайное количество чатов
+    const chatCount = Math.floor(Math.random() * 30) + 20; // 20-50 чатов
     
     const names = REAL_NAMES[currentLang][currentType] || REAL_NAMES['ru'][currentType];
     const simulatedChats = [];
     
-    // Создаем уникальные чаты с реальными названиями
     for (let i = 1; i <= chatCount; i++) {
         const nameIndex = (i - 1) % names.length;
         const name = names[nameIndex];
@@ -396,13 +496,13 @@ function simulateChatSelection() {
         });
     }
     
-    console.log(`Симулировано ${chatCount} чатов:`, simulatedChats);
+    console.log(`Симулировано ${chatCount} чатов`);
     handleSelectedChats(simulatedChats);
 }
 
-// Обработка ВСЕХ выбранных чатов
+// Обработка выбранных чатов
 async function handleSelectedChats(chatData) {
-    console.log('Начинаем обработку ВСЕХ чатов:', chatData);
+    console.log('Начинаем обработку чатов:', chatData);
     
     // Преобразуем данные в массив
     selectedChats = Array.isArray(chatData) ? chatData : [chatData];
@@ -429,7 +529,7 @@ async function handleSelectedChats(chatData) {
     analyzedResults = [];
     
     // Используем пакетную обработку для производительности
-    const batchSize = 10;
+    const batchSize = 5;
     
     for (let i = 0; i < selectedChats.length; i += batchSize) {
         const batch = selectedChats.slice(i, i + batchSize);
@@ -441,10 +541,13 @@ async function handleSelectedChats(chatData) {
         const progress = ((i + batchSize) / selectedChats.length) * 100;
         updateProgress(Math.min(progress, 100));
         
-        // Показываем промежуточные результаты каждые 50 чатов
-        if (i % 50 === 0 || i + batchSize >= selectedChats.length) {
+        // Показываем промежуточные результаты
+        if (i % 20 === 0 || i + batchSize >= selectedChats.length) {
             showPartialResults();
         }
+        
+        // Небольшая задержка между батчами
+        await sleep(50);
     }
     
     // Показываем финальные результаты
@@ -457,15 +560,14 @@ async function handleSelectedChats(chatData) {
     showAlert(`${TEXTS[currentLang].analysisComplete}! ${TEXTS[currentLang].totalFound}: ${selectedChats.length}`);
 }
 
-// Анализ чата с реальными названиями
+// Анализ чата
 async function analyzeChat(chat, index) {
     // Задержка для имитации анализа
-    await sleep(10 + Math.random() * 30); // Быстрее для большого количества
+    await sleep(50 + Math.random() * 100);
     
-    // Используем реальное название из данных чата
     const chatTitle = chat.title || `${TEXTS[currentLang][currentType + 'Title']} ${index + 1}`;
     
-    // Генерируем более реалистичный анализ
+    // Генерируем реалистичный анализ
     const rand = Math.random();
     let status, icon, description;
     
@@ -496,14 +598,14 @@ async function analyzeChat(chat, index) {
     }
     
     return {
-        id: chat.id || `chat_${Date.now()}_${Math.random()}`,
+        id: chat.id || `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         title: chatTitle,
-        username: chat.username || chatTitle.toLowerCase().replace(/\s+/g, '_'),
+        username: chat.username || chatTitle.toLowerCase().replace(/\s+/g, '_').substring(0, 30),
         type: chat.type || currentType.slice(0, -1),
         status: status,
         icon: icon,
         description: description,
-        selected: false // Не выбираем по умолчанию
+        selected: false
     };
 }
 
@@ -532,29 +634,34 @@ function showPartialResults() {
     const container = document.getElementById('resultsContainer');
     if (!container) return;
     
-    const recentResults = analyzedResults.slice(-10);
+    const recentResults = analyzedResults.slice(-5);
+    const processed = analyzedResults.length;
+    const total = selectedChats.length;
+    const percent = Math.round((processed / total) * 100);
     
     container.innerHTML = `
         <div class="summary">
             <h3>${TEXTS[currentLang].analyzing}</h3>
-            <p>${TEXTS[currentLang].processed} ${analyzedResults.length}/${selectedChats.length}</p>
+            <p>${TEXTS[currentLang].processed} ${processed}/${total} (${percent}%)</p>
             <div class="progress-info">
                 <div class="progress-bar-small">
-                    <div class="progress-fill" style="width: ${(analyzedResults.length / selectedChats.length) * 100}%"></div>
+                    <div class="progress-fill" style="width: ${percent}%"></div>
                 </div>
             </div>
-        </div>
-        <div class="results-list">
-            ${recentResults.map((result, index) => `
-                <div class="result-item ${result.status}">
-                    <i class="fas ${result.icon}"></i>
-                    <div class="result-info">
-                        <div class="result-title">${result.title}</div>
-                        <div class="result-desc">${result.description}</div>
-                        <div class="result-username">@${result.username}</div>
-                    </div>
+            <div style="margin-top: 20px;">
+                <h4>Последние результаты:</h4>
+                <div class="results-list">
+                    ${recentResults.map((result, index) => `
+                        <div class="result-item ${result.status}">
+                            <i class="fas ${result.icon}"></i>
+                            <div class="result-info">
+                                <div class="result-title">${result.title}</div>
+                                <div class="result-desc">${result.description}</div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('')}
+            </div>
         </div>
     `;
 }
@@ -574,6 +681,17 @@ function showResults() {
         spam: analyzedResults.filter(r => r.status === 'spam').length
     };
     
+    // Проверяем, все ли чаты определенного статуса выбраны
+    const allSelectedStatus = {};
+    Object.keys(stats).forEach(status => {
+        const chatsWithStatus = analyzedResults.filter(r => r.status === status);
+        if (chatsWithStatus.length === 0) {
+            allSelectedStatus[status] = false;
+        } else {
+            allSelectedStatus[status] = chatsWithStatus.every(chat => chat.selected);
+        }
+    });
+    
     const selectedCount = analyzedResults.filter(r => r.selected).length;
     const badChats = analyzedResults.filter(r => 
         r.status === 'dead' || r.status === 'toxic' || 
@@ -587,30 +705,16 @@ function showResults() {
         <div class="summary">
             <h3>${texts.summaryTitle} (${texts.totalFound} ${analyzedResults.length})</h3>
             <div class="summary-stats-grid">
-                <div class="summary-item active">
-                    <i class="fas fa-check-circle"></i>
-                    <span>${texts.activeCount} <b>${stats.active}</b></span>
-                </div>
-                <div class="summary-item inactive">
-                    <i class="fas fa-clock"></i>
-                    <span>${texts.inactiveCount} <b>${stats.inactive}</b></span>
-                </div>
-                <div class="summary-item dead">
-                    <i class="fas fa-skull-crossbones"></i>
-                    <span>${texts.deadCount} <b>${stats.dead}</b></span>
-                </div>
-                <div class="summary-item toxic">
-                    <i class="fas fa-radiation"></i>
-                    <span>${texts.toxicCount} <b>${stats.toxic}</b></span>
-                </div>
-                <div class="summary-item duplicate">
-                    <i class="fas fa-copy"></i>
-                    <span>${texts.duplicateCount} <b>${stats.duplicate}</b></span>
-                </div>
-                <div class="summary-item spam">
-                    <i class="fas fa-envelope"></i>
-                    <span>${texts.spamCount} <b>${stats.spam}</b></span>
-                </div>
+                ${Object.entries(stats).map(([status, count]) => `
+                    <div class="summary-item ${status}">
+                        <input type="checkbox" class="status-checkbox" 
+                               onchange="toggleStatusSelection('${status}')"
+                               ${allSelectedStatus[status] ? 'checked' : ''}
+                               ${count === 0 ? 'disabled' : ''}>
+                        <i class="fas ${getStatusIcon(status)}"></i>
+                        <span>${getStatusText(status)} <b>${count}</b></span>
+                    </div>
+                `).join('')}
             </div>
             <div class="selection-controls">
                 <button class="btn-small btn-danger" onclick="selectAllBadChats()">
@@ -624,9 +728,6 @@ function showResults() {
                 <p class="selected-count">
                     ${texts.selectedForCleaning} <b>${selectedCount}</b>
                 </p>
-                <p class="recommendation">
-                    <i class="fas fa-lightbulb"></i> ${texts.recommendations}: Рекомендуется очистить плохие чаты (${badChats})
-                </p>
             </div>
         </div>
         <div class="results-list-container">
@@ -634,14 +735,17 @@ function showResults() {
                 <h4>${analyzedResults.length} ${texts[currentType + 'Title'].toLowerCase()}</h4>
                 <div class="sort-controls">
                     <select id="sortSelect" onchange="sortResults()">
-                        <option value="status">Сортировать по статусу</option>
-                        <option value="name">Сортировать по названию</option>
+                        <option value="status">${texts.sortStatus}</option>
+                        <option value="name">${texts.sortName}</option>
                     </select>
                 </div>
             </div>
             <div class="results-list" id="resultsList">
                 ${analyzedResults.map((result, index) => `
-                    <div class="result-item ${result.status}">
+                    <div class="result-item ${result.status}" data-id="${result.id}">
+                        <input type="checkbox" class="result-checkbox" 
+                               onchange="toggleSelection('${result.id}')"
+                               ${result.selected ? 'checked' : ''}>
                         <i class="fas ${result.icon}"></i>
                         <div class="result-info">
                             <div class="result-title">
@@ -651,20 +755,61 @@ function showResults() {
                             <div class="result-username">@${result.username}</div>
                             <div class="result-desc">${result.description}</div>
                         </div>
-                        <input type="checkbox" class="result-checkbox" 
-                               onchange="toggleSelection(${index})"
-                               ${result.selected ? 'checked' : ''}>
                     </div>
                 `).join('')}
             </div>
         </div>
     `;
+    
+    updateCleanButton();
+}
+
+// Вспомогательные функции для статусов
+function getStatusIcon(status) {
+    const icons = {
+        'active': 'fa-check-circle',
+        'inactive': 'fa-clock',
+        'dead': 'fa-skull-crossbones',
+        'toxic': 'fa-radiation',
+        'duplicate': 'fa-copy',
+        'spam': 'fa-envelope'
+    };
+    return icons[status] || 'fa-question';
+}
+
+function getStatusText(status) {
+    const texts = TEXTS[currentLang];
+    const statusTexts = {
+        'active': texts.activeCount,
+        'inactive': texts.inactiveCount,
+        'dead': texts.deadCount,
+        'toxic': texts.toxicCount,
+        'duplicate': texts.duplicateCount,
+        'spam': texts.spamCount
+    };
+    return statusTexts[status] || status;
+}
+
+// Выбрать чаты определенного статуса
+function toggleStatusSelection(status) {
+    const chatsWithStatus = analyzedResults.filter(r => r.status === status);
+    if (chatsWithStatus.length === 0) return;
+    
+    const allSelected = chatsWithStatus.every(chat => chat.selected);
+    const newSelected = !allSelected;
+    
+    analyzedResults.forEach(result => {
+        if (result.status === status) {
+            result.selected = newSelected;
+        }
+    });
+    
+    showResults();
 }
 
 // Выбрать только плохие чаты
 function selectAllBadChats() {
     analyzedResults.forEach(result => {
-        // Выбираем только плохие: мертвые, токсичные, дубликаты, спам, неактивные
         result.selected = (result.status === 'dead' || result.status === 'toxic' || 
                           result.status === 'duplicate' || result.status === 'spam' || 
                           result.status === 'inactive');
@@ -682,6 +827,42 @@ function unselectAllChats() {
     updateCleanButton();
 }
 
+// Переключение выбора конкретного чата
+function toggleSelection(chatId) {
+    const result = analyzedResults.find(r => r.id === chatId);
+    if (result) {
+        result.selected = !result.selected;
+        
+        // Обновляем чекбокс в элементе
+        const element = document.querySelector(`[data-id="${chatId}"]`);
+        if (element) {
+            const checkbox = element.querySelector('.result-checkbox');
+            if (checkbox) {
+                checkbox.checked = result.selected;
+            }
+        }
+        
+        // Обновляем сводную статистику
+        updateSummaryCheckboxes();
+        updateCleanButton();
+    }
+}
+
+// Обновить чекбоксы в сводной статистике
+function updateSummaryCheckboxes() {
+    const stats = ['active', 'inactive', 'dead', 'toxic', 'duplicate', 'spam'];
+    stats.forEach(status => {
+        const chatsWithStatus = analyzedResults.filter(r => r.status === status);
+        if (chatsWithStatus.length === 0) return;
+        
+        const allSelected = chatsWithStatus.every(chat => chat.selected);
+        const checkbox = document.querySelector(`.status-checkbox[onchange*="${status}"]`);
+        if (checkbox) {
+            checkbox.checked = allSelected;
+        }
+    });
+}
+
 // Сортировка результатов
 function sortResults() {
     const sortBy = document.getElementById('sortSelect').value;
@@ -690,19 +871,18 @@ function sortResults() {
         analyzedResults.sort((a, b) => a.title.localeCompare(b.title));
     } else {
         // Сортировка по статусу: плохие вверху
-        const statusOrder = { 'dead': 1, 'toxic': 2, 'spam': 3, 'duplicate': 4, 'inactive': 5, 'active': 6 };
+        const statusOrder = { 
+            'dead': 1, 
+            'toxic': 2, 
+            'spam': 3, 
+            'duplicate': 4, 
+            'inactive': 5, 
+            'active': 6 
+        };
         analyzedResults.sort((a, b) => (statusOrder[a.status] || 7) - (statusOrder[b.status] || 7));
     }
     
     showResults();
-}
-
-// Переключение выбора
-function toggleSelection(index) {
-    if (analyzedResults[index]) {
-        analyzedResults[index].selected = !analyzedResults[index].selected;
-        updateCleanButton();
-    }
 }
 
 // Обновить кнопку очистки
@@ -714,9 +894,19 @@ function updateCleanButton() {
     if (selectedCount > 0) {
         cleanBtn.disabled = false;
         cleanBtn.innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected} (${selectedCount})`;
+        cleanBtn.onclick = () => confirmCleaning(selectedCount);
     } else {
         cleanBtn.disabled = true;
         cleanBtn.innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected}`;
+        cleanBtn.onclick = null;
+    }
+}
+
+// Подтверждение очистки
+function confirmCleaning(count) {
+    const texts = TEXTS[currentLang];
+    if (confirm(`${texts.confirmCleaning}\n${texts.selectedForCleaning} ${count}`)) {
+        cleanSelected();
     }
 }
 
@@ -728,6 +918,11 @@ function cleanSelected() {
         showAlert(TEXTS[currentLang].noChatsSelected);
         return;
     }
+    
+    const texts = TEXTS[currentLang];
+    
+    // Показываем уведомление о процессе
+    showAlert(`${texts.cleaningInProgress}...`);
     
     // Обновляем статистику
     let currentAnalyzed = parseInt(localStorage.getItem(`${currentUser}_analyzed`) || 0);
@@ -745,18 +940,20 @@ function cleanSelected() {
     localStorage.setItem(`${currentUser}_cleaned_groups`, currentGroups + groupsCleaned);
     localStorage.setItem(`${currentUser}_cleaned_bots`, currentBots + botsCleaned);
     
-    // Показываем уведомление
-    const message = currentLang === 'ru' 
-        ? `✅ Успешно очищено ${selected.length} чатов!\n\n📊 Статистика:\n• Каналов: ${channelsCleaned}\n• Групп: ${groupsCleaned}\n• Ботов: ${botsCleaned}\n\nВаша лента теперь чище! 🎉`
-        : `✅ Successfully cleaned ${selected.length} chats!\n\n📊 Statistics:\n• Channels: ${channelsCleaned}\n• Groups: ${groupsCleaned}\n• Bots: ${botsCleaned}\n\nYour feed is now cleaner! 🎉`;
-    
-    showAlert(message);
-    
-    // Обновляем статистику на экране
-    loadStats();
-    
-    // Возвращаем на главный экран
-    goBack();
+    // Задержка для имитации процесса очистки
+    setTimeout(() => {
+        const message = currentLang === 'ru' 
+            ? `✅ Успешно очищено ${selected.length} чатов!\n\n📊 Статистика:\n• Каналов: ${channelsCleaned}\n• Групп: ${groupsCleaned}\n• Ботов: ${botsCleaned}\n\n${texts.thankYou} 🎉`
+            : `✅ Successfully cleaned ${selected.length} chats!\n\n📊 Statistics:\n• Channels: ${channelsCleaned}\n• Groups: ${groupsCleaned}\n• Bots: ${botsCleaned}\n\n${texts.thankYou} 🎉`;
+        
+        showAlert(message);
+        
+        // Обновляем статистику на экране
+        loadStats();
+        
+        // Возвращаем на главный экран
+        goBack();
+    }, 1500);
 }
 
 // Показать алерт
@@ -814,3 +1011,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('Инициализация завершена');
 });
+
+// Добавляем обработчик на кнопку старта анализа
+document.getElementById('startAnalysisBtn').addEventListener('click', requestChats);
+
+// Добавляем глобальные функции
+window.selectType = selectType;
+window.requestChats = requestChats;
+window.goBack = goBack;
+window.toggleSelection = toggleSelection;
+window.toggleStatusSelection = toggleStatusSelection;
+window.selectAllBadChats = selectAllBadChats;
+window.unselectAllChats = unselectAllChats;
+window.sortResults = sortResults;
+window.cleanSelected = cleanSelected;

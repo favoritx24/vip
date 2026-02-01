@@ -14,11 +14,11 @@
         <header>
             <div class="logo">
                 <i class="fas fa-broom"></i>
-                <h1>Telegram Auditor</h1>
+                <h1 id="appTitle">Telegram Auditor</h1>
             </div>
             <div class="user-info" id="userInfo">
                 <i class="fas fa-user"></i>
-                <span>Загрузка...</span>
+                <span id="userId">Загрузка...</span>
             </div>
         </header>
 
@@ -26,54 +26,54 @@
         <div class="screen" id="mainScreen">
             <div class="card welcome-card">
                 <i class="fas fa-star main-icon"></i>
-                <h2>Очистка Telegram</h2>
-                <p>Проанализируйте и очистите свои каналы, группы и боты</p>
+                <h2 id="welcomeTitle">Очистка Telegram</h2>
+                <p id="welcomeDesc">Проанализируйте и очистите свои каналы, группы и боты</p>
             </div>
 
             <div class="selection-cards">
-                <div class="selection-card" onclick="selectType('channels')">
+                <div class="selection-card" id="channelsCard" onclick="selectType('channels')">
                     <i class="fas fa-broadcast-tower"></i>
-                    <h3>Каналы</h3>
-                    <p>Анализ и очистка каналов</p>
-                    <div class="badge" id="channelsCount">0</div>
+                    <h3 id="channelsTitle">Каналы</h3>
+                    <p id="channelsDesc">Анализ и очистка каналов</p>
+                    <div class="badge" id="channelsCount">∞</div>
                 </div>
 
-                <div class="selection-card" onclick="selectType('groups')">
+                <div class="selection-card" id="groupsCard" onclick="selectType('groups')">
                     <i class="fas fa-users"></i>
-                    <h3>Группы</h3>
-                    <p>Анализ и очистка групп</p>
-                    <div class="badge" id="groupsCount">0</div>
+                    <h3 id="groupsTitle">Группы</h3>
+                    <p id="groupsDesc">Анализ и очистка групп</p>
+                    <div class="badge" id="groupsCount">∞</div>
                 </div>
 
-                <div class="selection-card" onclick="selectType('bots')">
+                <div class="selection-card" id="botsCard" onclick="selectType('bots')">
                     <i class="fas fa-robot"></i>
-                    <h3>Боты</h3>
-                    <p>Анализ и очистка ботов</p>
-                    <div class="badge" id="botsCount">0</div>
+                    <h3 id="botsTitle">Боты</h3>
+                    <p id="botsDesc">Анализ и очистка ботов</p>
+                    <div class="badge" id="botsCount">∞</div>
                 </div>
             </div>
 
             <button class="btn-primary" id="startAnalysisBtn" onclick="requestChats()" style="display: none;">
-                <i class="fas fa-play"></i> Начать анализ
+                <i class="fas fa-play"></i> <span id="startAnalysisText">Начать анализ</span>
             </button>
 
             <!-- Статистика -->
             <div class="stats">
                 <div class="stat-item">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Проанализировано: <b id="analyzedCount">0</b></span>
+                    <span id="analyzedLabel">Проанализировано: <b id="analyzedCount">0</b></span>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-broadcast-tower"></i>
-                    <span>Каналов: <b id="cleanedChannels">0</b></span>
+                    <span id="channelsLabel">Каналов: <b id="cleanedChannels">0</b></span>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-users"></i>
-                    <span>Групп: <b id="cleanedGroups">0</b></span>
+                    <span id="groupsLabel">Групп: <b id="cleanedGroups">0</b></span>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-robot"></i>
-                    <span>Ботов: <b id="cleanedBots">0</b></span>
+                    <span id="botsLabel">Ботов: <b id="cleanedBots">0</b></span>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                 <button class="btn-back" onclick="goBack()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <h2>Анализ <span id="currentType">каналов</span></h2>
+                <h2 id="analysisTitle">Анализ <span id="currentTypeText">каналов</span></h2>
             </div>
 
             <div class="progress-container">
@@ -97,13 +97,13 @@
             </div>
 
             <button class="btn-success" onclick="cleanSelected()" id="cleanBtn" disabled>
-                <i class="fas fa-broom"></i> Очистить выбранное
+                <i class="fas fa-broom"></i> <span id="cleanSelectedText">Очистить выбранное</span>
             </button>
         </div>
 
         <!-- Рекламные каналы -->
         <div class="recommendations">
-            <h3><i class="fas fa-fire"></i> Рекомендуем подписаться</h3>
+            <h3><i class="fas fa-fire"></i> <span id="recommendationsTitle">Рекомендуем подписаться</span></h3>
             <div class="ad-channels" id="adChannels">
                 <!-- Рекламные каналы будут здесь -->
             </div>

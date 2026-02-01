@@ -1,9 +1,47 @@
 // Telegram WebApp объект
 const tg = window.Telegram.WebApp;
 
+// Получаем параметры из URL
+const urlParams = new URLSearchParams(window.location.search);
+const userLang = urlParams.get('lang') || 'en';
+const userId = urlParams.get('user_id') || '0';
+
+// Локализация
+const LOCALE = {
+    'ru': {
+        'title': 'TG Auditor Pro',
+        'subtitle': 'Очистите Telegram в 1 клик',
+        'select_channels': '🗂 Выбрать каналы',
+        'analyze': '🔍 Анализировать',
+        'selected': 'Выбрано:',
+        'analysis': 'Результаты анализа',
+        'delete': '🗑️ Удалить выбранное',
+        'recommended': '💎 Рекомендуемые каналы',
+        'stats': '📈 Ваша статистика'
+    },
+    'en': {
+        'title': 'TG Auditor Pro',
+        'subtitle': 'Clean your Telegram in 1 click',
+        'select_channels': '🗂 Select Channels',
+        'analyze': '🔍 Analyze',
+        'selected': 'Selected:',
+        'analysis': 'Analysis Results',
+        'delete': '🗑️ Delete Selected',
+        'recommended': '💎 Recommended Channels',
+        'stats': '📈 Your Stats'
+    }
+};
+
+// Применяем локализацию
+document.querySelector('h1').textContent = LOCALE[userLang].title;
+document.querySelector('.subtitle').textContent = LOCALE[userLang].subtitle;
+document.querySelector('#analysisCard h2').textContent = LOCALE[userLang].analysis;
+document.querySelector('#recommendations h2').textContent = LOCALE[userLang].recommended;
+document.querySelectorAll('.card h2')[2].textContent = LOCALE[userLang].stats;
+
 // Инициализация
-tg.expand(); // Раскрываем на весь экран
-tg.MainButton.setText("Start Analysis").show();
+tg.expand();
+tg.MainButton.setText(LOCALE[userLang].analyze).show();
 
 // Глобальные переменные
 let selectedChannels = [];
@@ -11,14 +49,10 @@ let analysisResults = [];
 
 // Основные функции
 function requestChannels() {
-    // В реальной версии здесь будет tg.requestChat
-    // Для теста эмулируем выбор
+    document.getElementById('selectBtn').innerHTML = '🔄 ' + LOCALE[userLang].select_channels + '...';
     
-    document.getElementById('selectBtn').innerHTML = '🔄 Selecting...';
-    
-    // Имитация выбора (в реальности Telegram откроет системное окно)
+    // Имитация выбора
     setTimeout(() => {
-        // Тестовые данные
         selectedChannels = [
             { id: 1, title: "Test Channel 1", type: "channel", last_post: "2023-01-15" },
             { id: 2, title: "Tech News", type: "channel", last_post: "2024-02-20" },
@@ -26,12 +60,12 @@ function requestChannels() {
             { id: 4, title: "Memes", type: "channel", last_post: "2024-02-25" }
         ];
         
-        document.getElementById('selectBtn').innerHTML = '✅ Channels Selected';
+        document.getElementById('selectBtn').innerHTML = '✅ ' + LOCALE[userLang].select_channels;
         document.getElementById('selectedCount').classList.remove('hidden');
         document.getElementById('count').textContent = selectedChannels.length;
         
         // Показываем кнопку анализа
-        tg.MainButton.setText(`Analyze ${selectedChannels.length} channels`);
+        tg.MainButton.setText(`${LOCALE[userLang].analyze} ${selectedChannels.length} channels`);
         tg.MainButton.onClick(analyzeChannels);
         tg.MainButton.show();
     }, 1000);
@@ -95,7 +129,7 @@ function showResults() {
     const spamChannels = analysisResults.filter(c => c.status === 'spam').length;
     
     document.getElementById('stats').innerHTML = `
-        <p>📊 Analysis Complete:</p>
+        <p>📊 ${LOCALE[userLang].analysis}:</p>
         <p>• Total channels: ${analysisResults.length}</p>
         <p>• Dead channels: ${deadChannels}</p>
         <p>• Spam channels: ${spamChannels}</p>
@@ -117,13 +151,11 @@ function showCleanup() {
     }, (btnId) => {
         if (btnId === 'yes') {
             tg.showAlert("✅ Cleanup completed! Your Telegram is now cleaner.");
-            // Здесь будет реальное удаление
         }
     });
 }
 
 function loadRecommendations() {
-    // В реальности здесь запрос к бекенду
     const channels = [
         { title: "Telegram Official", link: "https://t.me/telegram", desc: "Official Telegram channel" },
         { title: "Durov's Channel", link: "https://t.me/durov", desc: "Founder of Telegram" },
@@ -148,5 +180,12 @@ function loadRecommendations() {
     document.getElementById('channelsList').innerHTML = html;
 }
 
+// Обновляем текст кнопки
+document.getElementById('selectBtn').textContent = LOCALE[userLang].select_channels;
+document.querySelector('#analysisCard button').textContent = LOCALE[userLang].delete;
+
 // Загружаем рекомендации при старте
 loadRecommendations();
+
+// Сохраняем user_id в localStorage
+localStorage.setItem('tg_user_id', userId);

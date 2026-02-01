@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Auditor Pro 2026 - Clean Your Telegram</title>
+    <meta name="description" content="Очистите ваш Telegram от мусора, спама и неактивных каналов. Массовый анализ и выход из 1000+ каналов за минуты.">
+    <meta name="keywords" content="Telegram cleaner, channel auditor, массовый выход из каналов, чистка Telegram, удалить спам">
+    <meta property="og:title" content="TG Auditor Pro 2026 - Ultimate Telegram Cleaner">
+    <meta property="og:description" content="Очистите ваш Telegram от мусора. Анализ 1000+ каналов за секунды.">
+    <meta property="og:image" content="https://yourusername.github.io/tgauditor-frontend/og-image.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Загрузчик -->
+        <div id="loader" class="loader-container">
+            <div class="loader"></div>
+            <p class="loader-text">Загрузка TG Auditor Pro...</p>
+        </div>
+
+        <!-- Главный экран -->
+        <div id="mainScreen" class="screen hidden">
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="app-title">TG Auditor Pro 2026</h1>
+                    <p class="app-subtitle">Ultimate Telegram Cleaner</p>
+                </div>
+                <div class="user-info">
+                    <span id="userStats">Анализов: 0</span>
+                    <button id="languageSwitch" class="lang-btn">EN</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- Статистика -->
+                <div class="stats-card card">
+                    <h3>📊 Ваша статистика</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalChannels">0</div>
+                            <div class="stat-label">Каналов</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="timeSaved">0ч</div>
+                            <div class="stat-label">Сэкономлено</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="cleanedCount">0</div>
+                            <div class="stat-label">Очищено</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выбор чатов -->
+                <div class="section">
+                    <h2 class="section-title">🔍 Выберите чаты для анализа</h2>
+                    <div class="categories">
+                        <button class="category-btn active" data-type="all">
+                            <span class="category-icon">📁</span>
+                            <span class="category-text">Все чаты</span>
+                        </button>
+                        <button class="category-btn" data-type="channels">
+                            <span class="category-icon">📢</span>
+                            <span class="category-text">Каналы</span>
+                        </button>
+                        <button class="category-btn" data-type="groups">
+                            <span class="category-icon">👥</span>
+                            <span class="category-text">Группы</span>
+                        </button>
+                        <button class="category-btn" data-type="bots">
+                            <span class="category-icon">🤖</span>
+                            <span class="category-text">Боты</span>
+                        </button>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="selectAllBtn" class="btn btn-primary">
+                            <span class="btn-icon">📋</span>
+                            Выбрать все через Telegram
+                        </button>
+                        <button id="manualAddBtn" class="btn btn-secondary">
+                            <span class="btn-icon">➕</span>
+                            Добавить вручную
+                        </button>
+                    </div>
+
+                    <!-- Список выбранных чатов -->
+                    <div class="selected-chats card">
+                        <div class="selected-header">
+                            <h4>Выбранные чаты: <span id="selectedCount">0</span></h4>
+                            <button id="clearSelectionBtn" class="btn-small">Очистить</button>
+                        </div>
+                        <div id="selectedList" class="selected-list">
+                            <!-- Чаты будут добавляться динамически -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка анализа -->
+                <div class="analyze-section">
+                    <button id="analyzeBtn" class="btn btn-analyze" disabled>
+                        <span class="btn-icon">🔍</span>
+                        Начать анализ (<span id="analyzeCount">0</span> чатов)
+                    </button>
+                    <p class="analyze-note">Анализ займет от 30 секунд до 5 минут</p>
+                </div>
+
+                <!-- Быстрые действия -->
+                <div class="quick-actions">
+                    <h3 class="section-title">⚡ Быстрые действия</h3>
+                    <div class="actions-grid">
+                        <button class="action-card" id="quickClean">
+                            <span class="action-icon">🚀</span>
+                            <span class="action-text">Быстрая чистка</span>
+                            <span class="action-desc">Авто-анализ и очистка</span>
+                        </button>
+                        <button class="action-card" id="findDuplicates">
+                            <span class="action-icon">🔍</span>
+                            <span class="action-text">Найти дубликаты</span>
+                            <span class="action-desc">Поиск одинаковых каналов</span>
+                        </button>
+                        <button class="action-card" id="checkActivity">
+                            <span class="action-icon">📅</span>
+                            <span class="action-text">Проверить активность</span>
+                            <span class="action-desc">Неактивные каналы</span>
+                        </button>
+                        <button class="action-card" id="digitalWeight">
+                            <span class="action-icon">⚖️</span>
+                            <span class="action-text">Цифровой вес</span>
+                            <span class="action-desc">Анализ нагрузки</span>
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <div class="footer-links">
+                    <button class="footer-link" id="referralBtn">👥 Пригласить друзей</button>
+                    <button class="footer-link" id="helpBtn">❓ Помощь</button>
+                    <button class="footer-link" id="settingsBtn">⚙️ Настройки</button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Экран анализа -->
+        <div id="analysisScreen" class="screen hidden">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMain">← Назад</button>
+                <h2>🔍 Анализ каналов</h2>
+            </div>
+
+            <div class="analysis-progress">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressPercent">0%</span>
+                    <span id="progressStatus">Начинаем анализ...</span>
+                </div>
+            </div>
+
+            <div class="analysis-results">
+                <div class="result-category" id="inactiveCategory">
+                    <h3 class="category-title">💀 Неактивные</h3>
+                    <div class="category-count">0</div>
+                    <div class="category-list"></div>
+                </div>
+                <div class="result-category" id="duplicatesCategory">
+                    <h3 class="category-title">🔄 Дубликаты</h3>
+                    <div class="category-count">0</div>
+                    <div class="category-list"></div>
+                </div>
+                <div class="result-category" id="spamCategory">
+                    <h3 class="category-title">🚫 Спам</h3>
+                    <div class="category-count">0</div>
+                    <div class="category-list"></div>
+                </div>
+                <div class="result-category" id="toxicCategory">
+                    <h3 class="category-title">☣️ Токсичные</h3>
+                    <div class="category-count">0</div>
+                    <div class="category-list"></div>
+                </div>
+            </div>
+
+            <div class="digital-weight-card card">
+                <h3>⚖️ Цифровой вес</h3>
+                <div id="weightStats"></div>
+            </div>
+
+            <div class="analysis-actions">
+                <button id="massLeaveBtn" class="btn btn-danger">
+                    🚪 Массовый выход
+                </button>
+                <button id="saveReportBtn" class="btn btn-secondary">
+                    💾 Сохранить отчет
+                </button>
+                <button id="shareResultsBtn" class="btn btn-primary">
+                    📤 Поделиться
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран массового выхода -->
+        <div id="leaveScreen" class="screen hidden">
+            <div class="screen-header">
+                <button class="back-btn" id="backToAnalysis">← Назад</button>
+                <h2>🚪 Массовый выход</h2>
+            </div>
+
+            <div class="leave-info card">
+                <p>⚠️ <b>Внимание:</b> Вы собираетесь выйти из <span id="leaveCount">0</span> чатов.</p>
+                <p>Это действие нельзя отменить. Убедитесь, что вы сохранили важные данные.</p>
+            </div>
+
+            <div id="leaveLinks" class="leave-links">
+                <!-- Ссылки будут добавляться динамически -->
+            </div>
+
+            <div class="leave-instructions card">
+                <h4>📋 Инструкция:</h4>
+                <ol>
+                    <li>Нажмите на каждую ссылку ниже</li>
+                    <li>В открывшемся Telegram нажмите "Start"</li>
+                    <li>Подтвердите выход из канала</li>
+                    <li>Повторите для всех ссылок</li>
+                </ol>
+                <p class="tip">💡 Совет: Откройте все ссылки в новой вкладке</p>
+            </div>
+
+            <div class="leave-actions">
+                <button id="generateLinksBtn" class="btn btn-primary">
+                    🔗 Сгенерировать ссылки
+                </button>
+                <button id="copyAllLinksBtn" class="btn btn-secondary">
+                    📋 Копировать все
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран рекомендаций -->
+        <div id="recommendationsScreen" class="screen hidden">
+            <div class="screen-header">
+                <button class="back-btn" id="backFromRecommendations">← Назад</button>
+                <h2>🎯 Полезные замены</h2>
+            </div>
+
+            <div id="recommendationsList" class="recommendations-list">
+                <!-- Рекомендации будут добавляться динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

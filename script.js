@@ -1,4 +1,4 @@
-// Инициализация Telegram Web App
+// Telegram Web App
 let tg = window.Telegram.WebApp;
 let currentUser = null;
 let currentLang = 'ru';
@@ -6,142 +6,178 @@ let currentType = null;
 let selectedChats = [];
 let analyzedResults = [];
 
-// Проверка инициализации Telegram Web App
-function initTelegramWebApp() {
-    if (typeof window.Telegram === 'undefined') {
-        console.error('Telegram Web App SDK не загружен');
-        return false;
-    }
-    
-    tg = window.Telegram.WebApp;
-    
-    if (!tg) {
-        console.error('Telegram Web App не инициализирован');
-        return false;
-    }
-    
-    tg.expand();
-    tg.ready();
-    return true;
-}
-
-// Получаем параметры из URL
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('user_id') || 'test_user';
-const lang = urlParams.get('lang') || 'ru';
-
-// Устанавливаем язык
-currentLang = lang;
-document.documentElement.lang = lang;
-
 // Тексты на разных языках
 const TEXTS = {
     ru: {
-        welcome: "Очистка Telegram",
-        channels: "Каналы",
-        groups: "Группы",
-        bots: "Боты",
-        analyzing: "Анализ...",
-        selectAll: "Выбрать все",
-        cleanSelected: "Очистить выбранное",
-        recommendations: "Рекомендуем подписаться",
-        analyzed: "Проанализировано",
-        cleaned: "Очищено",
+        appTitle: "Telegram Auditor",
+        welcomeTitle: "Очистка Telegram",
+        welcomeDesc: "Проанализируйте и очистите свои каналы, группы и боты",
+        channelsTitle: "Каналы",
+        channelsDesc: "Анализ и очистка каналов",
+        groupsTitle: "Группы",
+        groupsDesc: "Анализ и очистка групп",
+        botsTitle: "Боты",
+        botsDesc: "Анализ и очистка ботов",
         startAnalysis: "Начать анализ",
+        startAnalysisType: "Начать анализ",
+        cleanSelected: "Очистить выбранное",
+        recommendationsTitle: "Рекомендуем подписаться",
+        analyzedLabel: "Проанализировано:",
+        channelsLabel: "Каналов:",
+        groupsLabel: "Групп:",
+        botsLabel: "Ботов:",
+        analysisTitle: "Анализ",
         selectTypeFirst: "Сначала выберите тип контента",
         noChatsSelected: "Чаты не выбраны",
         analysisComplete: "Анализ завершен",
         cleaningComplete: "Очистка завершена",
-        select: "Выбрать",
-        selected: "Выбрано",
-        channelsCount: "∞ каналов",
-        groupsCount: "∞ групп",
-        botsCount: "∞ ботов"
+        active: "Активный",
+        inactive: "Неактивный",
+        dead: "Мертвый",
+        toxic: "Токсичный",
+        activeDesc: "Активный, можно оставить",
+        inactiveDesc: "Неактивный более 1 месяца",
+        deadDesc: "Неактивный более 6 месяцев",
+        toxicDesc: "Токсичный контент",
+        subscribe: "Подписаться",
+        summaryTitle: "Итоги анализа:",
+        activeCount: "Активные:",
+        inactiveCount: "Неактивные:",
+        deadCount: "Мертвые:",
+        toxicCount: "Токсичные:",
+        selectedForCleaning: "Выбрано для очистки:",
+        analyzing: "Анализируем...",
+        processed: "Обработано:",
+        selectAll: "Выбрать все",
+        unselectAll: "Снять выделение"
     },
     en: {
-        welcome: "Telegram Cleaning",
-        channels: "Channels",
-        groups: "Groups",
-        bots: "Bots",
-        analyzing: "Analyzing...",
-        selectAll: "Select all",
-        cleanSelected: "Clean selected",
-        recommendations: "Recommended to subscribe",
-        analyzed: "Analyzed",
-        cleaned: "Cleaned",
+        appTitle: "Telegram Auditor",
+        welcomeTitle: "Telegram Cleaning",
+        welcomeDesc: "Analyze and clean your channels, groups and bots",
+        channelsTitle: "Channels",
+        channelsDesc: "Analysis and cleaning of channels",
+        groupsTitle: "Groups",
+        groupsDesc: "Analysis and cleaning of groups",
+        botsTitle: "Bots",
+        botsDesc: "Analysis and cleaning of bots",
         startAnalysis: "Start analysis",
+        startAnalysisType: "Start analysis",
+        cleanSelected: "Clean selected",
+        recommendationsTitle: "Recommended to subscribe",
+        analyzedLabel: "Analyzed:",
+        channelsLabel: "Channels:",
+        groupsLabel: "Groups:",
+        botsLabel: "Bots:",
+        analysisTitle: "Analysis",
         selectTypeFirst: "Select content type first",
         noChatsSelected: "No chats selected",
         analysisComplete: "Analysis complete",
         cleaningComplete: "Cleaning complete",
-        select: "Select",
-        selected: "Selected",
-        channelsCount: "∞ channels",
-        groupsCount: "∞ groups",
-        botsCount: "∞ bots"
+        active: "Active",
+        inactive: "Inactive",
+        dead: "Dead",
+        toxic: "Toxic",
+        activeDesc: "Active, can keep",
+        inactiveDesc: "Inactive for more than 1 month",
+        deadDesc: "Inactive for more than 6 months",
+        toxicDesc: "Toxic content",
+        subscribe: "Subscribe",
+        summaryTitle: "Analysis summary:",
+        activeCount: "Active:",
+        inactiveCount: "Inactive:",
+        deadCount: "Dead:",
+        toxicCount: "Toxic:",
+        selectedForCleaning: "Selected for cleaning:",
+        analyzing: "Analyzing...",
+        processed: "Processed:",
+        selectAll: "Select all",
+        unselectAll: "Unselect all"
     }
 };
+
+// Инициализация Telegram Web App
+function initTelegramWebApp() {
+    if (typeof window.Telegram === 'undefined') {
+        console.log('Telegram Web App SDK не загружен, работаем в браузере');
+        return false;
+    }
+    
+    try {
+        tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        console.log('Telegram Web App инициализирован');
+        return true;
+    } catch (error) {
+        console.error('Ошибка инициализации Telegram Web App:', error);
+        return false;
+    }
+}
+
+// Получаем параметры из URL
+function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        userId: urlParams.get('user_id') || 'demo_user_' + Math.random().toString(36).substr(2, 9),
+        lang: urlParams.get('lang') || 'ru'
+    };
+}
 
 // Обновляем тексты на странице
 function updateTexts() {
     const texts = TEXTS[currentLang];
     
-    // Обновляем заголовки
-    const elements = document.querySelectorAll('[data-i18n]');
-    elements.forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (texts[key]) {
-            el.textContent = texts[key];
-        }
-    });
+    // Обновляем все элементы с текстом
+    document.getElementById('appTitle').textContent = texts.appTitle;
+    document.getElementById('welcomeTitle').textContent = texts.welcomeTitle;
+    document.getElementById('welcomeDesc').textContent = texts.welcomeDesc;
+    document.getElementById('channelsTitle').textContent = texts.channelsTitle;
+    document.getElementById('channelsDesc').textContent = texts.channelsDesc;
+    document.getElementById('groupsTitle').textContent = texts.groupsTitle;
+    document.getElementById('groupsDesc').textContent = texts.groupsDesc;
+    document.getElementById('botsTitle').textContent = texts.botsTitle;
+    document.getElementById('botsDesc').textContent = texts.botsDesc;
+    document.getElementById('startAnalysisText').textContent = texts.startAnalysis;
+    document.getElementById('cleanSelectedText').textContent = texts.cleanSelected;
+    document.getElementById('recommendationsTitle').textContent = texts.recommendationsTitle;
+    document.getElementById('analyzedLabel').textContent = texts.analyzedLabel + ' ';
+    document.getElementById('channelsLabel').textContent = texts.channelsLabel + ' ';
+    document.getElementById('groupsLabel').textContent = texts.groupsLabel + ' ';
+    document.getElementById('botsLabel').textContent = texts.botsLabel + ' ';
+    document.getElementById('analysisTitle').textContent = texts.analysisTitle;
     
-    // Обновляем конкретные элементы
-    if (document.querySelector('h1')) {
-        document.querySelector('h1').textContent = texts.welcome;
-    }
-    
-    if (document.querySelector('.welcome-card h2')) {
-        document.querySelector('.welcome-card h2').textContent = texts.welcome;
-    }
-    
-    // Обновляем кнопки
-    const cleanBtn = document.getElementById('cleanBtn');
-    if (cleanBtn) {
-        cleanBtn.innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected}`;
-    }
-    
+    // Обновляем кнопку анализа
     const startBtn = document.getElementById('startAnalysisBtn');
     if (startBtn && currentType) {
-        const typeText = texts[currentType];
-        startBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysis} ${typeText}`;
+        startBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysisType} ${texts[currentType + 'Title']}`;
     }
-    
-    // Обновляем счетчики
-    document.getElementById('channelsCount').textContent = texts.channelsCount;
-    document.getElementById('groupsCount').textContent = texts.groupsCount;
-    document.getElementById('botsCount').textContent = texts.botsCount;
 }
 
 // Загрузка пользователя
 function loadUser() {
-    document.getElementById('userInfo').innerHTML = `
-        <i class="fas fa-user"></i>
-        <span>ID: ${userId.substring(0, 8)}...</span>
-    `;
+    const params = getUrlParams();
+    currentUser = params.userId;
+    currentLang = params.lang;
+    
+    document.getElementById('userId').textContent = `ID: ${currentUser.substring(0, 8)}...`;
     
     // Загружаем статистику
     loadStats();
     // Загружаем рекламные каналы
     loadAdChannels();
+    // Обновляем тексты
+    updateTexts();
 }
 
 // Загрузка статистики
 function loadStats() {
+    // Получаем статистику из localStorage
     const stats = {
-        analyzed: localStorage.getItem(`analyzed_${userId}`) || 0,
-        cleaned_channels: localStorage.getItem(`cleaned_channels_${userId}`) || 0,
-        cleaned_groups: localStorage.getItem(`cleaned_groups_${userId}`) || 0,
-        cleaned_bots: localStorage.getItem(`cleaned_bots_${userId}`) || 0
+        analyzed: localStorage.getItem(`${currentUser}_analyzed`) || 0,
+        cleaned_channels: localStorage.getItem(`${currentUser}_cleaned_channels`) || 0,
+        cleaned_groups: localStorage.getItem(`${currentUser}_cleaned_groups`) || 0,
+        cleaned_bots: localStorage.getItem(`${currentUser}_cleaned_bots`) || 0
     };
     
     document.getElementById('analyzedCount').textContent = stats.analyzed;
@@ -152,16 +188,29 @@ function loadStats() {
 
 // Загрузка рекламных каналов
 function loadAdChannels() {
-    const adChannels = [
+    const adChannels = currentLang === 'ru' ? [
         {
-            name: currentLang === 'ru' ? "Новости IT" : "IT News",
-            desc: currentLang === 'ru' ? "Свежие новости технологий" : "Fresh technology news",
+            name: "Новости IT",
+            desc: "Свежие новости технологий",
             icon: "fas fa-laptop-code",
             link: "https://t.me/telegram"
         },
         {
-            name: currentLang === 'ru' ? "Крипто аналитика" : "Crypto Analytics",
-            desc: currentLang === 'ru' ? "Анализ рынка криптовалют" : "Cryptocurrency market analysis",
+            name: "Крипто аналитика",
+            desc: "Анализ рынка криптовалют",
+            icon: "fas fa-chart-line",
+            link: "https://t.me/telegram"
+        }
+    ] : [
+        {
+            name: "IT News",
+            desc: "Fresh technology news",
+            icon: "fas fa-laptop-code",
+            link: "https://t.me/telegram"
+        },
+        {
+            name: "Crypto Analytics",
+            desc: "Cryptocurrency market analysis",
             icon: "fas fa-chart-line",
             link: "https://t.me/telegram"
         }
@@ -177,7 +226,7 @@ function loadAdChannels() {
                     <p>${channel.desc}</p>
                 </div>
                 <button class="ad-button" onclick="window.open('${channel.link}', '_blank')">
-                    ${currentLang === 'ru' ? 'Подписаться' : 'Subscribe'}
+                    ${TEXTS[currentLang].subscribe}
                 </button>
             </div>
         `).join('');
@@ -186,7 +235,7 @@ function loadAdChannels() {
 
 // Выбор типа контента
 function selectType(type) {
-    currentType = type;
+    console.log('Выбран тип:', type);
     
     // Снимаем выделение со всех карточек
     document.querySelectorAll('.selection-card').forEach(card => {
@@ -194,101 +243,81 @@ function selectType(type) {
     });
     
     // Выделяем выбранную карточку
-    const target = event?.currentTarget || document.querySelector(`[onclick*="${type}"]`);
-    if (target) {
-        target.classList.add('active');
+    const card = document.getElementById(`${type}Card`);
+    if (card) {
+        card.classList.add('active');
     }
     
-    // Показываем кнопку анализа
+    currentType = type;
+    
+    // Обновляем текст кнопки
     const startBtn = document.getElementById('startAnalysisBtn');
     if (startBtn) {
         startBtn.style.display = 'flex';
         const texts = TEXTS[currentLang];
-        const typeText = texts[type];
-        startBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysis} ${typeText}`;
+        startBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysisType} ${texts[type + 'Title']}`;
     }
+    
+    // Обновляем текст в заголовке анализа
+    document.getElementById('currentTypeText').textContent = TEXTS[currentLang][type + 'Title'].toLowerCase();
 }
 
 // Запрос чатов у Telegram
-async function requestChats() {
+function requestChats() {
     if (!currentType) {
         showAlert(TEXTS[currentLang].selectTypeFirst);
         return;
     }
     
-    if (!tg || !tg.requestChat) {
-        console.log('Telegram Web App requestChat не доступен, используем симуляцию');
-        await simulateChatSelection();
-        return;
-    }
+    console.log('Запрашиваем чаты типа:', currentType);
     
-    const params = {
-        chat_types: getChatTypesForCurrentType(),
-        allow_multiselect: true,
-        title: TEXTS[currentLang][currentType]
-    };
-    
-    console.log('Запрашиваем чаты с параметрами:', params);
-    
-    tg.requestChat({
-        ...params,
-        onSuccess: (data) => {
-            console.log('Получены чаты:', data);
-            handleSelectedChats(data);
-        },
-        onError: (error) => {
-            console.error('Ошибка при выборе чатов:', error);
-            showAlert(currentLang === 'ru' ? 
-                'Ошибка при выборе чатов, используем симуляцию' : 
-                'Error selecting chats, using simulation');
-            simulateChatSelection();
-        }
-    });
-}
-
-function getChatTypesForCurrentType() {
-    switch(currentType) {
-        case 'channels': return ['channel'];
-        case 'groups': return ['group'];
-        case 'bots': return ['bot'];
-        default: return ['channel'];
+    // Проверяем доступность Telegram Web App
+    if (tg && tg.requestChat) {
+        const chatTypes = {
+            'channels': ['channel'],
+            'groups': ['group'],
+            'bots': ['bot']
+        };
+        
+        tg.requestChat({
+            chat_types: chatTypes[currentType] || ['channel'],
+            allow_multiselect: true,
+            title: TEXTS[currentLang][currentType + 'Title']
+        }, (chat) => {
+            console.log('Получены чаты:', chat);
+            handleSelectedChats(chat);
+        });
+    } else {
+        // Симуляция для тестирования
+        console.log('Telegram Web App не доступен, используем симуляцию');
+        simulateChatSelection();
     }
 }
 
-// Симуляция выбора чатов (для тестирования)
-async function simulateChatSelection() {
+// Симуляция выбора чатов
+function simulateChatSelection() {
     console.log('Симуляция выбора чатов для типа:', currentType);
     
     // Генерируем тестовые чаты
-    const chatNames = {
-        ru: {
-            channels: ['Новости', 'Мемы', 'Крипта', 'IT Новости', 'Спорт', 'Музыка'],
-            groups: ['Работа', 'Друзья', 'Семья', 'Учеба', 'Хобби', 'Игры'],
-            bots: ['WeatherBot', 'NewsBot', 'TranslateBot', 'GameBot', 'MusicBot', 'SearchBot']
-        },
-        en: {
-            channels: ['News', 'Memes', 'Crypto', 'IT News', 'Sports', 'Music'],
-            groups: ['Work', 'Friends', 'Family', 'Study', 'Hobby', 'Games'],
-            bots: ['WeatherBot', 'NewsBot', 'TranslateBot', 'GameBot', 'MusicBot', 'SearchBot']
-        }
-    };
+    const chatCount = 15;
+    const simulatedChats = [];
     
-    const names = chatNames[currentLang][currentType] || chatNames['ru'][currentType];
-    const count = 10 + Math.floor(Math.random() * 20);
-    
-    const simulatedChats = Array.from({length: count}, (_, i) => ({
-        id: Date.now() + i,
-        title: `${names[i % names.length]} ${i + 1}`,
-        type: currentType === 'channels' ? 'channel' : 
-              currentType === 'groups' ? 'group' : 'bot'
-    }));
+    for (let i = 1; i <= chatCount; i++) {
+        simulatedChats.push({
+            id: `chat_${i}`,
+            title: `${TEXTS[currentLang][currentType + 'Title']} ${i}`,
+            type: currentType.slice(0, -1) // убираем 's' в конце
+        });
+    }
     
     console.log('Симулированные чаты:', simulatedChats);
-    await handleSelectedChats(simulatedChats);
+    handleSelectedChats(simulatedChats);
 }
 
 // Обработка выбранных чатов
 async function handleSelectedChats(chatData) {
+    console.log('Начинаем обработку чатов:', chatData);
+    
     // Преобразуем данные в массив
     selectedChats = Array.isArray(chatData) ? chatData : [chatData];
     
@@ -297,15 +326,9 @@ async function handleSelectedChats(chatData) {
         return;
     }
     
-    console.log('Начинаем анализ', selectedChats.length, 'чатов');
-    
     // Показываем экран анализа
     document.getElementById('mainScreen').style.display = 'none';
     document.getElementById('analysisScreen').style.display = 'block';
-    
-    // Устанавливаем тип
-    const typeText = TEXTS[currentLang][currentType];
-    document.getElementById('currentType').textContent = typeText.toLowerCase();
     
     // Показываем прогресс
     updateProgress(0);
@@ -322,13 +345,13 @@ async function handleSelectedChats(chatData) {
         const progress = ((i + 1) / selectedChats.length) * 100;
         updateProgress(progress);
         
-        // Показываем промежуточные результаты каждые 5 чатов
-        if (i % 5 === 0 || i === selectedChats.length - 1) {
+        // Показываем промежуточные результаты
+        if (i % 3 === 0 || i === selectedChats.length - 1) {
             showPartialResults();
         }
         
-        // Задержка для анимации
-        await sleep(50);
+        // Небольшая задержка для анимации
+        await sleep(100);
     }
     
     // Показываем финальные результаты
@@ -341,43 +364,36 @@ async function handleSelectedChats(chatData) {
     showAlert(TEXTS[currentLang].analysisComplete);
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 // Анализ чата
 async function analyzeChat(chat) {
-    // Задержка для имитации анализа
-    await sleep(100 + Math.random() * 200);
+    // Симуляция анализа
+    await sleep(50 + Math.random() * 150);
     
-    const chatType = chat.type || currentType.slice(0, -1);
-    
-    // Генерируем случайный статус с разными вероятностями
     const rand = Math.random();
     let status, icon, description;
     
-    if (rand < 0.3) { // 30% активные
+    if (rand < 0.4) { // 40% активные
         status = 'active';
         icon = 'fa-check-circle';
-        description = currentLang === 'ru' ? 'Активный, можно оставить' : 'Active, can keep';
-    } else if (rand < 0.6) { // 30% неактивные
+        description = TEXTS[currentLang].activeDesc;
+    } else if (rand < 0.7) { // 30% неактивные
         status = 'inactive';
         icon = 'fa-clock';
-        description = currentLang === 'ru' ? 'Неактивный более 1 месяца' : 'Inactive for more than 1 month';
-    } else if (rand < 0.8) { // 20% мертвые
+        description = TEXTS[currentLang].inactiveDesc;
+    } else if (rand < 0.9) { // 20% мертвые
         status = 'dead';
         icon = 'fa-skull-crossbones';
-        description = currentLang === 'ru' ? 'Неактивный более 6 месяцев' : 'Inactive for more than 6 months';
-    } else { // 20% токсичные
+        description = TEXTS[currentLang].deadDesc;
+    } else { // 10% токсичные
         status = 'toxic';
         icon = 'fa-radiation';
-        description = currentLang === 'ru' ? 'Токсичный контент' : 'Toxic content';
+        description = TEXTS[currentLang].toxicDesc;
     }
     
     return {
-        id: chat.id || Math.random().toString(36).substr(2, 9),
-        title: chat.title || `${TEXTS[currentLang][currentType]} ${analyzedResults.length + 1}`,
-        type: chatType,
+        id: chat.id || `chat_${Date.now()}_${Math.random()}`,
+        title: chat.title || `${TEXTS[currentLang][currentType + 'Title']} ${analyzedResults.length + 1}`,
+        type: chat.type || currentType.slice(0, -1),
         status: status,
         icon: icon,
         description: description,
@@ -401,27 +417,25 @@ function showPartialResults() {
     const container = document.getElementById('resultsContainer');
     if (!container) return;
     
-    const recentResults = analyzedResults.slice(-5);
+    const recentResults = analyzedResults.slice(-3);
     
     container.innerHTML = `
         <div class="summary">
-            <h3>${currentLang === 'ru' ? 'Анализируем...' : 'Analyzing...'}</h3>
-            <p>${currentLang === 'ru' ? 'Обработано:' : 'Processed:'} ${analyzedResults.length}/${selectedChats.length}</p>
+            <h3>${TEXTS[currentLang].analyzing}</h3>
+            <p>${TEXTS[currentLang].processed} ${analyzedResults.length}/${selectedChats.length}</p>
         </div>
-        <div class="results-list">
-            ${recentResults.map((result, index) => `
-                <div class="result-item ${result.status}">
-                    <i class="fas ${result.icon}"></i>
-                    <div class="result-info">
-                        <div class="result-title">${result.title}</div>
-                        <div class="result-desc">${result.description}</div>
-                    </div>
-                    <input type="checkbox" class="result-checkbox" 
-                           onchange="toggleSelection(${analyzedResults.length - recentResults.length + index})"
-                           ${result.selected ? 'checked' : ''}>
+        ${recentResults.map((result, index) => `
+            <div class="result-item ${result.status}">
+                <i class="fas ${result.icon}"></i>
+                <div class="result-info">
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-desc">${result.description}</div>
                 </div>
-            `).join('')}
-        </div>
+                <input type="checkbox" class="result-checkbox" 
+                       onchange="toggleSelection(${analyzedResults.length - recentResults.length + index})"
+                       ${result.selected ? 'checked' : ''}>
+            </div>
+        `).join('')}
     `;
 }
 
@@ -430,19 +444,6 @@ function showResults() {
     const container = document.getElementById('resultsContainer');
     if (!container) return;
     
-    if (analyzedResults.length === 0) {
-        container.innerHTML = `
-            <div class="result-item">
-                <i class="fas fa-info-circle"></i>
-                <div class="result-info">
-                    <div class="result-title">${currentLang === 'ru' ? 'Нет результатов' : 'No results'}</div>
-                    <div class="result-desc">${currentLang === 'ru' ? 'Выберите чаты для анализа' : 'Select chats for analysis'}</div>
-                </div>
-            </div>
-        `;
-        return;
-    }
-    
     // Группируем по статусу
     const activeChats = analyzedResults.filter(r => r.status === 'active').length;
     const inactiveChats = analyzedResults.filter(r => r.status === 'inactive').length;
@@ -450,30 +451,35 @@ function showResults() {
     const toxicChats = analyzedResults.filter(r => r.status === 'toxic').length;
     
     const selectedCount = analyzedResults.filter(r => r.selected).length;
+    const texts = TEXTS[currentLang];
     
     container.innerHTML = `
         <div class="summary">
-            <h3>${currentLang === 'ru' ? 'Итоги анализа:' : 'Analysis summary:'}</h3>
+            <h3>${texts.summaryTitle}</h3>
             <div class="summary-stats">
                 <div class="summary-item active">
                     <i class="fas fa-check-circle"></i>
-                    <span>${currentLang === 'ru' ? 'Активные:' : 'Active:'} ${activeChats}</span>
+                    <span>${texts.activeCount} ${activeChats}</span>
                 </div>
                 <div class="summary-item inactive">
                     <i class="fas fa-clock"></i>
-                    <span>${currentLang === 'ru' ? 'Неактивные:' : 'Inactive:'} ${inactiveChats}</span>
+                    <span>${texts.inactiveCount} ${inactiveChats}</span>
                 </div>
                 <div class="summary-item dead">
                     <i class="fas fa-skull-crossbones"></i>
-                    <span>${currentLang === 'ru' ? 'Мертвые:' : 'Dead:'} ${deadChats}</span>
+                    <span>${texts.deadCount} ${deadChats}</span>
                 </div>
                 <div class="summary-item toxic">
                     <i class="fas fa-radiation"></i>
-                    <span>${currentLang === 'ru' ? 'Токсичные:' : 'Toxic:'} ${toxicChats}</span>
+                    <span>${texts.toxicCount} ${toxicChats}</span>
                 </div>
             </div>
-            <p style="margin-top: 10px; color: var(--primary); font-weight: bold;">
-                ${currentLang === 'ru' ? 'Выбрано для очистки:' : 'Selected for cleaning:'} ${selectedCount}
+            <div class="selection-controls">
+                <button class="btn-small" onclick="selectAllChats()">${texts.selectAll}</button>
+                <button class="btn-small" onclick="unselectAllChats()">${texts.unselectAll}</button>
+            </div>
+            <p class="selected-count">
+                ${texts.selectedForCleaning} <b>${selectedCount}</b>
             </p>
         </div>
         <div class="results-list">
@@ -493,25 +499,43 @@ function showResults() {
     `;
 }
 
+// Выбрать все чаты
+function selectAllChats() {
+    analyzedResults.forEach(result => {
+        result.selected = true;
+    });
+    showResults();
+    updateCleanButton();
+}
+
+// Снять выделение со всех чатов
+function unselectAllChats() {
+    analyzedResults.forEach(result => {
+        result.selected = false;
+    });
+    showResults();
+    updateCleanButton();
+}
+
 // Переключение выбора
 function toggleSelection(index) {
     if (analyzedResults[index]) {
         analyzedResults[index].selected = !analyzedResults[index].selected;
-        updateSelectedCount();
+        updateCleanButton();
     }
 }
 
-function updateSelectedCount() {
+// Обновить кнопку очистки
+function updateCleanButton() {
     const selectedCount = analyzedResults.filter(r => r.selected).length;
     const cleanBtn = document.getElementById('cleanBtn');
+    const texts = TEXTS[currentLang];
     
     if (selectedCount > 0) {
         cleanBtn.disabled = false;
-        const texts = TEXTS[currentLang];
         cleanBtn.innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected} (${selectedCount})`;
     } else {
         cleanBtn.disabled = true;
-        const texts = TEXTS[currentLang];
         cleanBtn.innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected}`;
     }
 }
@@ -521,44 +545,32 @@ function cleanSelected() {
     const selected = analyzedResults.filter(r => r.selected);
     
     if (selected.length === 0) {
-        showAlert(currentLang === 'ru' ? 
-            'Выберите хотя бы один чат для очистки' : 
-            'Select at least one chat to clean');
+        showAlert(TEXTS[currentLang].noChatsSelected);
         return;
     }
     
-    // Обновляем статистику в localStorage
-    const currentAnalyzed = parseInt(localStorage.getItem(`analyzed_${userId}`) || 0);
-    let currentCleanedChannels = parseInt(localStorage.getItem(`cleaned_channels_${userId}`) || 0);
-    let currentCleanedGroups = parseInt(localStorage.getItem(`cleaned_groups_${userId}`) || 0);
-    let currentCleanedBots = parseInt(localStorage.getItem(`cleaned_bots_${userId}`) || 0);
+    // Обновляем статистику
+    let currentAnalyzed = parseInt(localStorage.getItem(`${currentUser}_analyzed`) || 0);
+    let currentChannels = parseInt(localStorage.getItem(`${currentUser}_cleaned_channels`) || 0);
+    let currentGroups = parseInt(localStorage.getItem(`${currentUser}_cleaned_groups`) || 0);
+    let currentBots = parseInt(localStorage.getItem(`${currentUser}_cleaned_bots`) || 0);
     
     // Считаем по типам
     const channelsCleaned = selected.filter(r => r.type === 'channel').length;
     const groupsCleaned = selected.filter(r => r.type === 'group').length;
     const botsCleaned = selected.filter(r => r.type === 'bot').length;
     
-    localStorage.setItem(`analyzed_${userId}`, currentAnalyzed + analyzedResults.length);
-    localStorage.setItem(`cleaned_channels_${userId}`, currentCleanedChannels + channelsCleaned);
-    localStorage.setItem(`cleaned_groups_${userId}`, currentCleanedGroups + groupsCleaned);
-    localStorage.setItem(`cleaned_bots_${userId}`, currentCleanedBots + botsCleaned);
+    localStorage.setItem(`${currentUser}_analyzed`, currentAnalyzed + analyzedResults.length);
+    localStorage.setItem(`${currentUser}_cleaned_channels`, currentChannels + channelsCleaned);
+    localStorage.setItem(`${currentUser}_cleaned_groups`, currentGroups + groupsCleaned);
+    localStorage.setItem(`${currentUser}_cleaned_bots`, currentBots + botsCleaned);
     
     // Показываем уведомление
-    showAlert(
-        currentLang === 'ru' ? 
-        `✅ Успешно очищено ${selected.length} чатов!\n\n` +
-        `📊 Статистика:\n` +
-        `• Каналов: ${channelsCleaned}\n` +
-        `• Групп: ${groupsCleaned}\n` +
-        `• Ботов: ${botsCleaned}\n\n` +
-        `Ваша лента теперь чище! 🎉` :
-        `✅ Successfully cleaned ${selected.length} chats!\n\n` +
-        `📊 Statistics:\n` +
-        `• Channels: ${channelsCleaned}\n` +
-        `• Groups: ${groupsCleaned}\n` +
-        `• Bots: ${botsCleaned}\n\n` +
-        `Your feed is now cleaner! 🎉`
-    );
+    const message = currentLang === 'ru' 
+        ? `✅ Успешно очищено ${selected.length} чатов!\n\n📊 Статистика:\n• Каналов: ${channelsCleaned}\n• Групп: ${groupsCleaned}\n• Ботов: ${botsCleaned}\n\nВаша лента теперь чище! 🎉`
+        : `✅ Successfully cleaned ${selected.length} chats!\n\n📊 Statistics:\n• Channels: ${channelsCleaned}\n• Groups: ${groupsCleaned}\n• Bots: ${botsCleaned}\n\nYour feed is now cleaner! 🎉`;
+    
+    showAlert(message);
     
     // Обновляем статистику на экране
     loadStats();
@@ -600,20 +612,25 @@ function goBack() {
     updateProgress(0);
 }
 
+// Вспомогательная функция задержки
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Документ загружен');
+    
     // Инициализируем Telegram Web App
-    if (!initTelegramWebApp()) {
-        console.log('Telegram Web App не инициализирован, работаем в браузере');
-    }
+    initTelegramWebApp();
     
-    // Загружаем данные
+    // Загружаем данные пользователя
     loadUser();
-    updateTexts();
     
-    // Добавляем обработчики для карточек выбора
-    document.querySelectorAll('.selection-card').forEach(card => {
-        const type = card.querySelector('h3').textContent.toLowerCase();
-        card.onclick = () => selectType(type);
-    });
+    // Добавляем обработчики
+    document.getElementById('channelsCard').addEventListener('click', () => selectType('channels'));
+    document.getElementById('groupsCard').addEventListener('click', () => selectType('groups'));
+    document.getElementById('botsCard').addEventListener('click', () => selectType('bots'));
+    
+    console.log('Инициализация завершена');
 });

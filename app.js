@@ -1,176 +1,82 @@
-// Telegram WebApp объект
+// Telegram WebApp
 const tg = window.Telegram.WebApp;
 
-// Получаем параметры из URL
+// Get parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const userLang = urlParams.get('lang') || 'en';
 const userId = urlParams.get('user_id') || '0';
 
-// SVG иконки (профессиональные)
-const ICONS = {
-    clean: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`,
-    stats: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
-    settings: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
-    invite: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>`,
-    share: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>`,
-    channel: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
-    check: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
-    delete: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`,
-    loading: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>`,
-    star: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-    crown: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4M4 8l8 4 8-4M4 12v8h16v-8"></path><path d="M20 12l-8 4-8-4"></path></svg>`,
-    lock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
-    unlock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`,
-    trophy: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`,
-    gift: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>`,
-    globe: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
-    users: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
-};
-
-// ПОЛНАЯ ЛОКАЛИЗАЦИЯ
+// Localization
 const LOCALE = {
     'ru': {
         'title': 'TG Auditor Pro',
         'subtitle': 'Профессиональная очистка Telegram',
         'step1Title': 'Выбор каналов',
-        'step1Desc': 'Выберите Telegram каналы и группы для анализа. Можно выбрать несколько сразу.',
+        'step1Desc': 'Выберите Telegram каналы и группы для анализа',
         'step2Title': 'Результаты анализа',
         'step3Title': 'Рекомендуемые каналы',
-        'step3Desc': 'Качественные каналы, рекомендованные для вас',
-        'step4Title': 'Ваша статистика',
+        'step3Desc': 'Качественные каналы для вас',
         'selectBtnText': 'ВЫБРАТЬ КАНАЛЫ',
-        'selectingText': 'Выбор каналов...',
+        'selectingText': 'Выбор...',
         'selectedText': 'Выбрано:',
         'channelsText': 'каналов',
-        'selectTitle': 'Выберите каналы',
-        'manualSelectTitle': 'Выбор каналов',
-        'manualSelectText': 'В Telegram Desktop или мобильном приложении откроется окно выбора. Нажмите "Выбрать все" вверху, затем "OK".',
-        'continueBtn': 'Продолжить',
-        'loadingText': 'ИИ анализирует ваши каналы...',
-        'loadingSubtext': ['✓ Проверяем активность', '✓ Ищем спам', '✓ Анализируем контент'],
+        'analyzeBtnText': 'АНАЛИЗИРОВАТЬ',
+        'loadingText': 'ИИ анализирует каналы...',
         'cleanText': 'Чистота:',
-        'cleanupBtnText': 'ОЧИСТИТЬ ВЫБРАННОЕ',
-        'cleaningText': 'Идет очистка...',
+        'cleanupBtnText': 'ОЧИСТИТЬ',
         'successTitle': 'Очистка завершена!',
-        'successMessage': 'Ваш Telegram теперь чище и организованнее',
-        'shareResultsBtn': 'ПОДЕЛИТЬСЯ РЕЗУЛЬТАТАМИ',
-        'totalLabel': 'Всего',
-        'deadLabel': 'Мёртвых',
-        'spamLabel': 'Спама',
-        'toxicLabel': 'Токсичных',
-        'cleanLabel': 'На очистку',
-        'statsDefaultText': 'Выберите и проанализируйте каналы для статистики',
-        'footerText': 'TG Auditor Pro © 2024 | Профессиональная очистка Telegram',
-        'poweredBy': 'На основе AI технологий',
+        'successMessage': 'Ваш Telegram теперь чище',
         'channel': 'Канал',
         'status': 'Статус',
         'score': 'Оценка',
         'dead': 'Мёртвый',
         'spam': 'Спам',
         'good': 'Хороший',
-        'inactive': 'Неактивный',
-        'toxic': 'Токсичный',
-        'duplicate': 'Дубликат',
-        'mandatoryTitle': 'ТРЕБОВАНИЯ ДОСТУПА',
-        'mandatoryText': 'Для полного доступа к функциям необходимо выполнить требования:',
-        'showMandatoryBtn': 'ПОКАЗАТЬ ТРЕБОВАНИЯ',
-        'inviteRequired': 'Пригласить друзей:',
-        'subscribeRequired': 'Подписаться на каналы:',
-        'accessGranted': '✅ Полный доступ',
-        'accessRestricted': '🔒 Ограниченный доступ',
-        'inviteFriendsBtn': '👥 ПРИГЛАСИТЬ ДРУЗЕЙ',
-        'shareBotBtn': '📢 ПОДЕЛИТЬСЯ БОТОМ',
-        'myReferralsBtn': '🏆 МОИ РЕФЕРАЛЫ',
-        'analyzeBtn': '🔍 АНАЛИЗИРОВАТЬ',
-        'cleanupConfirmTitle': 'Подтверждение очистки',
-        'cleanupConfirmText': 'Удалить выбранные каналы?',
-        'yesDelete': 'Да, удалить!',
-        'cancel': 'Отмена',
-        'cleanupComplete': '✅ Очистка завершена!'
+        'inactive': 'Неактивный'
     },
     'en': {
         'title': 'TG Auditor Pro',
         'subtitle': 'Professional Telegram Cleaner',
         'step1Title': 'Select Channels',
-        'step1Desc': 'Choose Telegram channels and groups to analyze. Multiple selection available.',
+        'step1Desc': 'Choose Telegram channels and groups to analyze',
         'step2Title': 'Analysis Results',
         'step3Title': 'Recommended Channels',
-        'step3Desc': 'Quality channels recommended for you',
-        'step4Title': 'Your Statistics',
+        'step3Desc': 'Quality channels for you',
         'selectBtnText': 'SELECT CHANNELS',
-        'selectingText': 'Selecting channels...',
+        'selectingText': 'Selecting...',
         'selectedText': 'Selected:',
         'channelsText': 'channels',
-        'selectTitle': 'Select Channels',
-        'manualSelectTitle': 'Channel Selection',
-        'manualSelectText': 'In Telegram Desktop or mobile app, selection window will open. Click "Select All" at top, then "OK".',
-        'continueBtn': 'Continue',
-        'loadingText': 'AI is analyzing your channels...',
-        'loadingSubtext': ['✓ Checking activity', '✓ Detecting spam', '✓ Analyzing content'],
+        'analyzeBtnText': 'ANALYZE',
+        'loadingText': 'AI analyzing channels...',
         'cleanText': 'Clean:',
-        'cleanupBtnText': 'CLEAN SELECTED',
-        'cleaningText': 'Cleaning in progress...',
+        'cleanupBtnText': 'CLEAN',
         'successTitle': 'Cleaning Complete!',
-        'successMessage': 'Your Telegram is now cleaner and organized',
-        'shareResultsBtn': 'SHARE RESULTS',
-        'totalLabel': 'Total',
-        'deadLabel': 'Dead',
-        'spamLabel': 'Spam',
-        'toxicLabel': 'Toxic',
-        'cleanLabel': 'To Clean',
-        'statsDefaultText': 'Select and analyze channels to see statistics',
-        'footerText': 'TG Auditor Pro © 2024 | Professional Telegram Cleaner',
-        'poweredBy': 'Powered by AI technology',
+        'successMessage': 'Your Telegram is now cleaner',
         'channel': 'Channel',
         'status': 'Status',
         'score': 'Score',
         'dead': 'Dead',
         'spam': 'Spam',
         'good': 'Good',
-        'inactive': 'Inactive',
-        'toxic': 'Toxic',
-        'duplicate': 'Duplicate',
-        'mandatoryTitle': 'ACCESS REQUIREMENTS',
-        'mandatoryText': 'To access all features, you need to complete requirements:',
-        'showMandatoryBtn': 'SHOW REQUIREMENTS',
-        'inviteRequired': 'Invite friends:',
-        'subscribeRequired': 'Subscribe to channels:',
-        'accessGranted': '✅ Full Access',
-        'accessRestricted': '🔒 Restricted Access',
-        'inviteFriendsBtn': '👥 INVITE FRIENDS',
-        'shareBotBtn': '📢 SHARE BOT',
-        'myReferralsBtn': '🏆 MY REFERRALS',
-        'analyzeBtn': '🔍 ANALYZE',
-        'cleanupConfirmTitle': 'Cleanup Confirmation',
-        'cleanupConfirmText': 'Delete selected channels?',
-        'yesDelete': 'Yes, delete!',
-        'cancel': 'Cancel',
-        'cleanupComplete': '✅ Cleanup completed!'
+        'inactive': 'Inactive'
     }
 };
 
-// Глобальные переменные
+// Global variables
 let selectedChannels = [];
 let analysisResults = [];
 let userStats = {
     total: 0,
     dead: 0,
     spam: 0,
-    toxic: 0,
-    inactive: 0,
     toClean: 0,
     cleanPercent: 0
 };
-let userAccess = {
-    hasAccess: true,
-    requirements: [],
-    invitesNeeded: 0,
-    currentInvites: 0
-};
 
-// Инициализация WebApp
+// Initialize WebApp
 function initWebApp() {
-    if (!window.Telegram || !window.Telegram.WebApp) {
+    if (!tg || !tg.initData) {
+        console.error('Telegram WebApp not available');
         showError('Please open in Telegram app');
         return;
     }
@@ -182,130 +88,87 @@ function initWebApp() {
         tg.setBackgroundColor('#0f172a');
         tg.MainButton.hide();
         
-        // Применяем локализацию
+        // Apply localization
         applyLocalization();
         
-        // Загружаем рекомендации
+        // Load recommendations
         loadRecommendedChannels();
         
-        // Проверяем доступ пользователя
-        checkUserAccess();
-        
-        // Показываем интерфейс
-        showMainInterface();
-        
-        console.log('TG Auditor Pro initialized successfully');
+        console.log('TG Auditor Pro initialized');
     } catch (error) {
         console.error('Initialization error:', error);
-        showError('Initialization failed. Please restart.');
+        showError('Initialization failed');
     }
 }
 
-// Применяем локализацию
+// Apply localization
 function applyLocalization() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    // Обновляем все текстовые элементы
-    document.querySelectorAll('[data-locale]').forEach(el => {
-        const key = el.getAttribute('data-locale');
-        if (locale[key]) {
-            el.innerHTML = locale[key];
-        }
-    });
-    
-    // Обновляем заголовки
+    // Update all text elements
     document.getElementById('title').textContent = locale.title;
     document.getElementById('subtitle').textContent = locale.subtitle;
+    document.getElementById('step1Title').textContent = locale.step1Title;
+    document.getElementById('step1Desc').textContent = locale.step1Desc;
+    document.getElementById('step2Title').textContent = locale.step2Title;
+    document.getElementById('step3Title').textContent = locale.step3Title;
+    document.getElementById('step3Desc').textContent = locale.step3Desc;
+    document.getElementById('selectBtnText').textContent = locale.selectBtnText;
+    document.getElementById('selectedText').textContent = locale.selectedText;
+    document.getElementById('channelsText').textContent = locale.channelsText;
+    document.getElementById('analyzeBtnText').textContent = locale.analyzeBtnText;
+    document.getElementById('loadingText').textContent = locale.loadingText;
+    document.getElementById('cleanText').textContent = locale.cleanText;
+    document.getElementById('cleanupBtnText').textContent = locale.cleanupBtnText;
+    document.getElementById('successTitle').textContent = locale.successTitle;
+    document.getElementById('successMessage').textContent = locale.successMessage;
     
-    // Обновляем кнопки с иконками
-    document.getElementById('selectBtnText').innerHTML = `${ICONS.channel} ${locale.selectBtnText}`;
-    document.getElementById('analyzeBtnText').innerHTML = `${ICONS.loading} ${locale.analyzeBtn}`;
-    document.getElementById('cleanupBtnText').innerHTML = `${ICONS.delete} ${locale.cleanupBtnText}`;
-    document.getElementById('inviteFriendsBtn').innerHTML = `${ICONS.invite} ${locale.inviteFriendsBtn}`;
-    document.getElementById('shareBotBtn').innerHTML = `${ICONS.share} ${locale.shareBotBtn}`;
-    document.getElementById('myReferralsBtn').innerHTML = `${ICONS.trophy} ${locale.myReferralsBtn}`;
-    
-    return locale;
+    // Update language badge
+    document.getElementById('languageBadge').textContent = userLang === 'ru' ? '🌍 Русский' : '🌍 English';
 }
 
-// Показать основной интерфейс
-function showMainInterface() {
-    // Показываем все основные секции
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step3').style.display = 'block';
-    document.getElementById('step4').style.display = 'block';
-    document.getElementById('successCard').style.display = 'none';
-    
-    // Настраиваем кнопки
-    setupEventListeners();
-}
-
-// Настройка обработчиков событий
-function setupEventListeners() {
-    // Кнопка выбора каналов
-    document.getElementById('selectChannelsBtn').onclick = requestChannels;
-    
-    // Кнопка анализа
-    document.getElementById('analyzeBtn').onclick = startAnalysis;
-    
-    // Кнопка очистки
-    document.getElementById('cleanupBtn').onclick = startCleanup;
-    
-    // Социальные кнопки
-    document.getElementById('inviteFriendsBtn').onclick = showInviteFriends;
-    document.getElementById('shareBotBtn').onclick = showShareBot;
-    document.getElementById('myReferralsBtn').onclick = showMyReferrals;
-    
-    // Кнопка требований
-    document.getElementById('showRequirementsBtn').onclick = showRequirements;
-}
-
-// ==== ОСНОВНЫЕ ФУНКЦИИ ====
-
-// 1. ВЫБОР КАНАЛОВ
+// 1. SELECT CHANNELS
 function requestChannels() {
     const btn = document.getElementById('selectChannelsBtn');
     const btnText = document.getElementById('selectBtnText');
     const locale = LOCALE[userLang] || LOCALE['en'];
     
     btn.disabled = true;
-    btn.classList.add('loading');
-    btnText.innerHTML = `${ICONS.loading} ${locale.selectingText}`;
+    btnText.textContent = locale.selectingText;
     
-    // Проверяем доступ к Telegram API
+    // Check if we're in Telegram app
     if (tg.platform !== 'unknown' && typeof tg.requestChat === 'function') {
-        // Используем Telegram WebApp API для выбора чатов
+        // Use Telegram WebApp API
         tg.requestChat({
-            chat_types: ['channel', 'group'],
+            chat_types: ['channel'],
             allow_multiselect: true,
-            title: locale.selectTitle,
-            optional: false
+            title: locale.step1Title
         }, (chats) => {
             if (chats && chats.length > 0) {
                 handleSelectedChats(chats);
             } else {
-                showSelectionManual();
+                // No channels selected or error
+                showManualSelection();
             }
         });
     } else {
-        // Показываем инструкцию для ручного выбора
-        showSelectionManual();
+        // Not in Telegram app, show manual selection
+        showManualSelection();
     }
 }
 
-function showSelectionManual() {
+function showManualSelection() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
     tg.showPopup({
-        title: locale.manualSelectTitle,
-        message: locale.manualSelectText,
+        title: locale.step1Title,
+        message: 'In Telegram app, you can select multiple channels at once. For testing, we will use demo channels.',
         buttons: [
-            { id: 'simulate', type: 'default', text: locale.continueBtn },
+            { id: 'demo', type: 'default', text: 'Use Demo Channels' },
             { type: 'cancel' }
         ]
     }, (btnId) => {
-        if (btnId === 'simulate') {
+        if (btnId === 'demo') {
             simulateChannelSelection();
         } else {
             resetSelectionButton();
@@ -314,47 +177,47 @@ function showSelectionManual() {
 }
 
 function simulateChannelSelection() {
-    // Тестовые данные для демонстрации
-    const mockChannels = [
+    // Demo channels for testing
+    const demoChannels = [
         { 
             id: -1001234567890, 
-            title: "Tech News Daily", 
+            title: "Tech News", 
             type: "channel", 
             username: "tech_news",
             members: 125000,
             last_post: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            description: "Latest technology news and updates"
+            description: "Latest technology news"
         },
         { 
             id: -1001234567891, 
-            title: "Crypto Signals Pro", 
+            title: "Crypto Signals", 
             type: "channel", 
             username: "crypto_signals",
             members: 85000,
-            last_post: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            last_post: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString(),
             description: "Cryptocurrency trading signals"
         },
         { 
             id: -1001234567892, 
-            title: "Programming Hub", 
+            title: "Programming", 
             type: "channel", 
             username: "programming",
             members: 220000,
             last_post: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            description: "Programming tutorials and tips"
+            description: "Programming tutorials"
         },
         { 
             id: -1001234567893, 
-            title: "Old Archive Channel", 
+            title: "Old Archive", 
             type: "channel", 
             username: "old_archive",
             members: 5000,
-            last_post: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString(),
+            last_post: new Date(Date.now() - 300 * 24 * 60 * 60 * 1000).toISOString(),
             description: "Inactive channel"
         },
         { 
             id: -1001234567894, 
-            title: "SPAM Promotions", 
+            title: "SPAM Promo", 
             type: "channel", 
             username: "spam_promo",
             members: 15000,
@@ -363,7 +226,7 @@ function simulateChannelSelection() {
         }
     ];
     
-    handleSelectedChats(mockChannels);
+    handleSelectedChats(demoChannels);
 }
 
 function handleSelectedChats(chats) {
@@ -371,38 +234,29 @@ function handleSelectedChats(chats) {
     const btnText = document.getElementById('selectBtnText');
     const counter = document.getElementById('selectionCounter');
     const countElem = document.getElementById('channelCount');
+    const analyzeSection = document.getElementById('analyzeSection');
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    // Сбрасываем состояние кнопки
     btn.disabled = false;
-    btn.classList.remove('loading');
     
     if (!chats || chats.length === 0) {
-        btnText.innerHTML = `${ICONS.channel} ${locale.selectBtnText}`;
+        btnText.textContent = locale.selectBtnText;
         tg.showAlert('No channels selected');
         return;
     }
     
-    // Сохраняем выбранные каналы
-    selectedChannels = chats.map(chat => ({
-        id: chat.id,
-        title: chat.title,
-        username: chat.username || '',
-        type: chat.type,
-        members: chat.members || Math.floor(Math.random() * 100000) + 1000,
-        last_post: chat.last_post || new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-        description: chat.description || getRandomDescription(chat.title)
-    }));
+    // Save selected channels
+    selectedChannels = chats;
     
-    // Показываем счетчик
+    // Show counter
     countElem.textContent = selectedChannels.length;
     counter.style.display = 'flex';
-    btnText.innerHTML = `${ICONS.check} ${selectedChannels.length} ${locale.channelsText}`;
+    btnText.textContent = `${selectedChannels.length} ${locale.channelsText}`;
     
-    // Активируем кнопку анализа
-    document.getElementById('analyzeBtn').style.display = 'block';
+    // Show analyze button
+    analyzeSection.style.display = 'block';
     
-    console.log('Selected channels:', selectedChannels.length);
+    console.log(`Selected ${selectedChannels.length} channels`);
 }
 
 function resetSelectionButton() {
@@ -411,54 +265,40 @@ function resetSelectionButton() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
     btn.disabled = false;
-    btn.classList.remove('loading');
-    btnText.innerHTML = `${ICONS.channel} ${locale.selectBtnText}`;
+    btnText.textContent = locale.selectBtnText;
 }
 
-// 2. АНАЛИЗ КАНАЛОВ
+// 2. ANALYZE CHANNELS
 function startAnalysis() {
     if (selectedChannels.length === 0) {
         tg.showAlert('Please select channels first');
         return;
     }
     
-    // Проверяем доступ
-    if (!userAccess.hasAccess) {
-        showAccessRequirements();
-        return;
-    }
+    // Show analysis section
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('loadingAnalysis').style.display = 'block';
+    document.getElementById('resultsSection').classList.add('hidden');
     
-    // Показываем шаг 2
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
-    document.getElementById('loadingAnalysis').style.display = 'flex';
-    document.getElementById('resultsSection').style.display = 'none';
-    
-    // Запускаем анализ
+    // Start analysis
     setTimeout(() => {
         performAnalysis();
     }, 2000);
 }
 
 function performAnalysis() {
-    // Анализируем каждый канал
+    // Analyze each channel
     analysisResults = selectedChannels.map(channel => {
-        const analysis = analyzeChannel(channel);
-        return {
-            ...channel,
-            ...analysis
-        };
+        return analyzeChannel(channel);
     });
     
-    // Показываем результаты
+    // Show results
     showAnalysisResults();
     
-    // Обновляем статистику
-    updateStatistics();
-    
-    // Скрываем загрузку
+    // Hide loading
     document.getElementById('loadingAnalysis').style.display = 'none';
-    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('resultsSection').classList.remove('hidden');
 }
 
 function analyzeChannel(channel) {
@@ -466,7 +306,7 @@ function analyzeChannel(channel) {
     let score = 8;
     let reason = "Active quality channel";
     
-    // 1. Проверка активности
+    // Check activity
     const lastPostDate = new Date(channel.last_post);
     const daysSinceLastPost = Math.floor((Date.now() - lastPostDate.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -475,108 +315,80 @@ function analyzeChannel(channel) {
         score = 1;
         reason = `Inactive for ${daysSinceLastPost} days`;
     }
-    // 2. Детектор спама
+    // Check for spam
     else if (isSpamChannel(channel)) {
         status = "spam";
         score = 2;
-        reason = "Spam/promotional content detected";
+        reason = "Spam content detected";
     }
-    // 3. Детектор токсичности
-    else if (isToxicChannel(channel)) {
-        status = "toxic";
-        score = 4;
-        reason = "Toxic/hype content detected";
-    }
-    // 4. Маленькая аудитория
+    // Check for small audience
     else if (channel.members < 1000) {
         status = "inactive";
         score = 5;
-        reason = `Small audience (${channel.members.toLocaleString()} members)`;
-    }
-    // 5. Дубликаты (упрощенно)
-    else if (hasDuplicateKeywords(channel)) {
-        status = "duplicate";
-        score = 6;
-        reason = "Similar to other channels";
+        reason = `Small audience (${channel.members} members)`;
     }
     
     return {
+        ...channel,
         status: status,
         score: score,
         reason: reason,
-        daysSinceLastPost: daysSinceLastPost,
-        priority: status === "good" ? "low" : "high"
+        daysSinceLastPost: daysSinceLastPost
     };
 }
 
 function isSpamChannel(channel) {
-    const spamKeywords = ['buy', 'sale', 'discount', 'promo', 'offer', 'limited', 'urgent', 'click', 'link', 'http://', 'www.'];
+    const spamKeywords = ['buy', 'sale', 'discount', 'promo', 'offer', 'limited', 'urgent'];
     const text = (channel.title + ' ' + channel.description).toLowerCase();
     return spamKeywords.some(keyword => text.includes(keyword));
 }
 
-function isToxicChannel(channel) {
-    const toxicPatterns = ['🚀', '💰', '🔥', '💎', '🤑', '100x', 'get rich', 'quick money', 'guaranteed'];
-    const text = channel.title + ' ' + channel.description;
-    return toxicPatterns.some(pattern => text.includes(pattern));
-}
-
-function hasDuplicateKeywords(channel) {
-    // Упрощенная проверка дубликатов
-    const keywords = channel.title.toLowerCase().split(' ');
-    return keywords.some(word => 
-        analysisResults.some(result => 
-            result.title.toLowerCase().includes(word) && 
-            result.id !== channel.id
-        )
-    );
-}
-
-// 3. ПОКАЗ РЕЗУЛЬТАТОВ
+// 3. SHOW ANALYSIS RESULTS
 function showAnalysisResults() {
     const resultsList = document.getElementById('resultsList');
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    // Очищаем список
+    // Clear list
     resultsList.innerHTML = '';
     
-    // Считаем статистику
+    // Calculate statistics
     userStats = {
         total: analysisResults.length,
         dead: analysisResults.filter(c => c.status === 'dead').length,
         spam: analysisResults.filter(c => c.status === 'spam').length,
-        toxic: analysisResults.filter(c => c.status === 'toxic').length,
-        inactive: analysisResults.filter(c => c.status === 'inactive').length,
-        duplicate: analysisResults.filter(c => c.status === 'duplicate').length,
         toClean: 0,
         cleanPercent: 0
     };
     
-    userStats.toClean = userStats.dead + userStats.spam + userStats.toxic;
+    userStats.toClean = userStats.dead + userStats.spam;
     userStats.cleanPercent = Math.round(((userStats.total - userStats.toClean) / userStats.total) * 100);
     
-    // Обновляем прогресс-бар
+    // Update progress bar
     document.getElementById('progressFill').style.width = `${userStats.cleanPercent}%`;
     document.getElementById('cleanPercent').textContent = `${userStats.cleanPercent}%`;
     
-    // Показываем каналы
-    analysisResults.forEach((channel, index) => {
+    // Show channels
+    analysisResults.forEach((channel) => {
         const item = createChannelResultItem(channel, locale);
         resultsList.appendChild(item);
     });
     
-    // Показываем кнопку очистки если есть что удалять
+    // Show cleanup button if there are channels to clean
     if (userStats.toClean > 0) {
-        document.getElementById('cleanupBtn').style.display = 'block';
-        document.getElementById('cleanupBtnText').innerHTML = `${ICONS.delete} ${locale.cleanupBtnText} (${userStats.toClean})`;
+        document.getElementById('cleanupBtn').classList.remove('hidden');
+        document.getElementById('cleanupBtnText').textContent = 
+            `${locale.cleanupBtnText} (${userStats.toClean})`;
     }
+    
+    // Update statistics
+    updateStatistics();
 }
 
 function createChannelResultItem(channel, locale) {
     const item = document.createElement('div');
     item.className = 'result-item';
     
-    // Определяем стили для статуса
+    // Determine status class and text
     let statusClass = 'badge-good';
     let statusText = locale.good;
     
@@ -589,26 +401,23 @@ function createChannelResultItem(channel, locale) {
             statusClass = 'badge-spam';
             statusText = locale.spam;
             break;
-        case 'toxic':
-            statusClass = 'badge-toxic';
-            statusText = locale.toxic;
-            break;
         case 'inactive':
             statusClass = 'badge-inactive';
             statusText = locale.inactive;
             break;
-        case 'duplicate':
-            statusClass = 'badge-duplicate';
-            statusText = locale.duplicate;
-            break;
     }
+    
+    // Determine score color
+    let scoreColor = '#10b981';
+    if (channel.score <= 3) scoreColor = '#ef4444';
+    else if (channel.score <= 6) scoreColor = '#f59e0b';
     
     item.innerHTML = `
         <div class="channel-info">
             <div class="channel-title">${channel.title}</div>
             <div class="channel-desc">${channel.description}</div>
             <div class="channel-meta">
-                <span>${ICONS.users} ${channel.members.toLocaleString()}</span>
+                <span>👥 ${channel.members.toLocaleString()}</span>
                 <span>📅 ${channel.daysSinceLastPost}д</span>
             </div>
         </div>
@@ -619,7 +428,7 @@ function createChannelResultItem(channel, locale) {
             <div class="channel-reason">${channel.reason}</div>
         </div>
         <div class="channel-score">
-            <div class="score-circle" style="background: ${getScoreColor(channel.score)}; border-color: ${getScoreColor(channel.score)}">
+            <div class="score-circle" style="background: ${scoreColor}20; border-color: ${scoreColor}">
                 ${channel.score}/10
             </div>
         </div>
@@ -628,16 +437,10 @@ function createChannelResultItem(channel, locale) {
     return item;
 }
 
-function getScoreColor(score) {
-    if (score >= 8) return 'rgba(16, 185, 129, 0.2)';
-    if (score >= 5) return 'rgba(245, 158, 11, 0.2)';
-    return 'rgba(239, 68, 68, 0.2)';
-}
-
-// 4. ОЧИСТКА КАНАЛОВ
+// 4. CLEANUP
 function startCleanup() {
     const channelsToDelete = analysisResults.filter(c => 
-        c.status === 'dead' || c.status === 'spam' || c.status === 'toxic'
+        c.status === 'dead' || c.status === 'spam'
     ).length;
     
     if (channelsToDelete === 0) {
@@ -648,18 +451,11 @@ function startCleanup() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
     tg.showPopup({
-        title: locale.cleanupConfirmTitle,
-        message: `${locale.cleanupConfirmText}\n\n🗑️ ${channelsToDelete} ${locale.channel.toLowerCase()}`,
+        title: 'Cleanup Confirmation',
+        message: `Delete ${channelsToDelete} channels?`,
         buttons: [
-            { 
-                id: 'yes', 
-                type: 'destructive', 
-                text: locale.yesDelete 
-            },
-            { 
-                type: 'cancel',
-                text: locale.cancel
-            }
+            { id: 'yes', type: 'destructive', text: 'Yes, delete' },
+            { type: 'cancel' }
         ]
     }, (btnId) => {
         if (btnId === 'yes') {
@@ -673,41 +469,38 @@ function performCleanup(count) {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
     cleanupBtn.disabled = true;
-    cleanupBtn.classList.add('loading');
-    cleanupBtn.innerHTML = `${ICONS.loading} ${locale.cleaningText}`;
+    cleanupBtn.textContent = 'Cleaning...';
     
-    // Анимация прогресса
+    // Animate progress
     let progress = 0;
     const interval = setInterval(() => {
-        progress += 10;
+        progress += 20;
         document.getElementById('progressFill').style.width = `${progress}%`;
         document.getElementById('cleanPercent').textContent = `${progress}%`;
         
         if (progress >= 100) {
             clearInterval(interval);
-            showSuccessAnimation(count);
+            showSuccess(count);
             
-            // Отправляем результаты на сервер
+            // Send results to server
             sendResultsToServer(count);
         }
-    }, 150);
+    }, 200);
 }
 
-function showSuccessAnimation(count) {
+function showSuccess(count) {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    // Скрываем результаты
-    document.getElementById('step2').style.display = 'none';
+    // Hide analysis section
+    document.getElementById('step2').classList.add('hidden');
     
-    // Показываем успех
-    document.getElementById('successCard').style.display = 'block';
+    // Show success card
+    document.getElementById('successCard').classList.remove('hidden');
     document.getElementById('successTitle').textContent = locale.successTitle;
-    document.getElementById('successMessage').innerHTML = `
-        ${locale.cleanupComplete}<br>
-        <strong>${count}</strong> ${locale.channel.toLowerCase()} ${locale.cleanedText || 'cleaned'}
-    `;
+    document.getElementById('successMessage').textContent = 
+        `${locale.successMessage} (${count} channels cleaned)`;
     
-    // Вибрация если доступна
+    // Vibrate if available
     if (navigator.vibrate) {
         navigator.vibrate([100, 50, 100]);
     }
@@ -718,86 +511,56 @@ function sendResultsToServer(count) {
         action: 'analysis_complete',
         user_id: userId,
         analyzed: userStats.total,
-        deleted: count,
-        channels: analysisResults.map(c => ({
-            id: c.id,
-            title: c.title,
-            status: c.status,
-            score: c.score
-        }))
+        deleted: count
     };
     
-    // Отправляем данные боту через WebApp
+    // Send data to bot
     if (tg.sendData) {
         tg.sendData(JSON.stringify(data));
     }
     
-    console.log('Results sent to server:', data);
+    console.log('Results sent:', data);
 }
 
-// 5. РЕКОМЕНДАЦИИ
+// 5. RECOMMENDED CHANNELS
 function loadRecommendedChannels() {
     const container = document.getElementById('recommendedChannels');
-    const locale = LOCALE[userLang] || LOCALE['en'];
     
-    // Тестовые данные
+    // Demo recommended channels
     const channels = [
         { 
             title: "Telegram Official", 
             url: "https://t.me/telegram", 
-            desc: "Official Telegram news and updates",
-            lang: "all",
-            members: "12M",
-            category: "Official"
+            desc: "Official Telegram news",
+            members: "12M"
         },
         { 
             title: userLang === 'ru' ? "Новости Технологий" : "Tech Insider", 
             url: "https://t.me/technology", 
-            desc: userLang === 'ru' ? "Свежие IT новости и обзоры" : "Latest tech news and insights",
-            lang: userLang,
-            members: "150K",
-            category: userLang === 'ru' ? "Технологии" : "Technology"
+            desc: userLang === 'ru' ? "Свежие IT новости" : "Latest tech news",
+            members: "150K"
         },
         { 
             title: "AI & ML Daily", 
             url: "https://t.me/ai_ml", 
-            desc: "Artificial Intelligence and Machine Learning updates",
-            lang: "en",
-            members: "85K",
-            category: "AI"
-        },
-        { 
-            title: userLang === 'ru' ? "Дизайн и Креатив" : "Design & Creativity", 
-            url: "https://t.me/design", 
-            desc: userLang === 'ru' ? "Вдохновение для дизайнеров" : "Creative inspiration for designers",
-            lang: userLang === 'ru' ? 'ru' : 'en',
-            members: "65K",
-            category: userLang === 'ru' ? "Дизайн" : "Design"
+            desc: "Artificial Intelligence updates",
+            members: "85K"
         }
     ];
     
-    // Фильтруем по языку
-    const filtered = channels.filter(c => c.lang === 'all' || c.lang === userLang);
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `<p class="no-data">No recommendations available</p>`;
-        return;
-    }
-    
     let html = '';
-    filtered.forEach(channel => {
+    channels.forEach(channel => {
         html += `
             <div class="recommended-item">
                 <div class="recommended-info">
                     <div class="recommended-title">${channel.title}</div>
                     <div class="recommended-desc">${channel.desc}</div>
-                    <div class="recommended-meta">
-                        <span>${ICONS.users} ${channel.members}</span>
-                        <span>🏷️ ${channel.category}</span>
+                    <div class="channel-meta">
+                        <span>👥 ${channel.members}</span>
                     </div>
                 </div>
                 <a href="${channel.url}" target="_blank" class="recommended-btn">
-                    ${ICONS.star} ${locale.join || 'Join'}
+                    Join
                 </a>
             </div>
         `;
@@ -806,101 +569,20 @@ function loadRecommendedChannels() {
     container.innerHTML = html;
 }
 
-// 6. ДОСТУП И ТРЕБОВАНИЯ
-function checkUserAccess() {
-    // Имитация проверки доступа
-    // В реальном приложении здесь будет запрос к серверу
-    userAccess = {
-        hasAccess: Math.random() > 0.3, // 70% шанс что есть доступ
-        requirements: [
-            { type: 'invite', count: 3, current: 1 },
-            { type: 'subscribe', channels: ['@telegram', '@durov'] }
-        ],
-        invitesNeeded: 2,
-        currentInvites: 1
-    };
-    
-    updateAccessUI();
-}
-
-function updateAccessUI() {
-    const accessNotice = document.getElementById('accessNotice');
-    const locale = LOCALE[userLang] || LOCALE['en'];
-    
-    if (userAccess.hasAccess) {
-        accessNotice.style.display = 'none';
-        document.getElementById('accessStatus').innerHTML = `
-            <div class="access-granted">
-                ${ICONS.check} ${locale.accessGranted}
-            </div>
-        `;
-    } else {
-        accessNotice.style.display = 'block';
-        document.getElementById('accessStatus').innerHTML = `
-            <div class="access-restricted">
-                ${ICONS.lock} ${locale.accessRestricted}
-                <div class="access-progress">
-                    ${locale.inviteRequired} ${userAccess.currentInvites}/${userAccess.invitesNeeded}
-                </div>
-            </div>
-        `;
-    }
-}
-
-function showAccessRequirements() {
-    const locale = LOCALE[userLang] || LOCALE['en'];
-    
-    let requirementsText = `<b>${locale.mandatoryTitle}</b>\n\n`;
-    requirementsText += `${locale.mandatoryText}\n\n`;
-    
-    userAccess.requirements.forEach(req => {
-        if (req.type === 'invite') {
-            requirementsText += `• ${locale.inviteRequired} ${req.current}/${req.count} friends\n`;
-        } else if (req.type === 'subscribe') {
-            requirementsText += `• ${locale.subscribeRequired}\n`;
-            req.channels.forEach(channel => {
-                requirementsText += `  - ${channel}\n`;
-            });
-        }
-    });
-    
-    tg.showPopup({
-        title: locale.mandatoryTitle,
-        message: requirementsText,
-        buttons: [
-            { id: 'invite', type: 'default', text: locale.inviteFriendsBtn },
-            { type: 'cancel' }
-        ]
-    }, (btnId) => {
-        if (btnId === 'invite') {
-            showInviteFriends();
-        }
-    });
-}
-
-function showRequirements() {
-    showAccessRequirements();
-}
-
-// 7. СОЦИАЛЬНЫЕ ФУНКЦИИ
+// 6. SOCIAL FUNCTIONS
 function showInviteFriends() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    const inviteText = locale.inviteText || `Invite friends and get premium features!`;
-    
     tg.showPopup({
-        title: `${ICONS.gift} Invite Friends`,
-        message: `${inviteText}\n\nYour referral code: ${userId}\n\nInvites needed: ${userAccess.invitesNeeded - userAccess.currentInvites}`,
+        title: '👥 Invite Friends',
+        message: `Invite friends and get premium features!\n\nYour referral code: ${userId}`,
         buttons: [
             { id: 'share', type: 'default', text: '📱 Share Link' },
-            { id: 'copy', type: 'default', text: '📋 Copy Link' },
             { type: 'cancel' }
         ]
     }, (btnId) => {
         if (btnId === 'share') {
             shareReferralLink();
-        } else if (btnId === 'copy') {
-            copyReferralLink();
         }
     });
 }
@@ -908,131 +590,71 @@ function showInviteFriends() {
 function shareReferralLink() {
     const link = `https://t.me/TG_Auditor_Pro_bot?start=${userId}`;
     const text = userLang === 'ru' 
-        ? `Привет! Я использую супер-бот для очистки Telegram! 🧹\n\nОн анализирует каналы, находит мусор и помогает навести порядок.\n\nПопробуй по моей ссылке: ${link}`
-        : `Hi! I'm using a super bot to clean Telegram! 🧹\n\nIt analyzes channels, finds junk and helps organize everything.\n\nTry it via my link: ${link}`;
+        ? `Привет! Попробуй TG Auditor Pro для очистки Telegram! 🧹\n\n${link}`
+        : `Hi! Try TG Auditor Pro for Telegram cleaning! 🧹\n\n${link}`;
     
     tg.openLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
-}
-
-function copyReferralLink() {
-    const link = `https://t.me/TG_Auditor_Pro_bot?start=${userId}`;
-    navigator.clipboard.writeText(link).then(() => {
-        tg.showAlert('Link copied to clipboard!');
-    }).catch(() => {
-        tg.showAlert('Failed to copy link');
-    });
 }
 
 function showShareBot() {
     const locale = LOCALE[userLang] || LOCALE['en'];
     
-    const shareText = locale.shareText || `Share this amazing bot with friends!`;
-    
     tg.showPopup({
-        title: `${ICONS.share} Share Bot`,
-        message: `${shareText}\n\nRecommend TG Auditor Pro to your friends!`,
+        title: '📢 Share Bot',
+        message: 'Share this amazing bot with friends!',
         buttons: [
             { id: 'telegram', type: 'default', text: '📱 Telegram' },
-            { id: 'other', type: 'default', text: '🔗 Other Apps' },
             { type: 'cancel' }
         ]
     }, (btnId) => {
         if (btnId === 'telegram') {
-            shareToTelegram();
-        } else if (btnId === 'other') {
-            shareToOtherApps();
+            shareBotToTelegram();
         }
     });
 }
 
-function shareToTelegram() {
+function shareBotToTelegram() {
     const text = userLang === 'ru'
-        ? `✨ Рекомендую TG Auditor Pro - профессиональный инструмент для очистки Telegram!\n\n🧹 Что умеет:\n• Анализ активности каналов\n• Детектор спама и мусора\n• Умные рекомендации\n• Статистика использования\n\n🔗 https://t.me/TG_Auditor_Pro_bot`
-        : `✨ I recommend TG Auditor Pro - professional Telegram cleaner!\n\n🧹 Features:\n• Channel activity analysis\n• Spam and junk detector\n• Smart recommendations\n• Usage statistics\n\n🔗 https://t.me/TG_Auditor_Pro_bot`;
+        ? `✨ Рекомендую TG Auditor Pro - супер-бот для очистки Telegram! 🧹\n\nhttps://t.me/TG_Auditor_Pro_bot`
+        : `✨ I recommend TG Auditor Pro - super bot for Telegram cleaning! 🧹\n\nhttps://t.me/TG_Auditor_Pro_bot`;
     
     tg.openLink(`https://t.me/share/url?url=https://t.me/TG_Auditor_Pro_bot&text=${encodeURIComponent(text)}`);
 }
 
-function shareToOtherApps() {
+function shareResults() {
     const text = userLang === 'ru'
-        ? "TG Auditor Pro - профессиональный инструмент для очистки Telegram! 🧹"
-        : "TG Auditor Pro - professional Telegram cleaner! 🧹";
+        ? `Я только что очистил ${userStats.toClean} каналов в Telegram с помощью @TG_Auditor_Pro! 🧹`
+        : `I just cleaned ${userStats.toClean} channels in Telegram with @TG_Auditor_Pro! 🧹`;
     
-    if (navigator.share) {
-        navigator.share({
-            title: 'TG Auditor Pro',
-            text: text,
-            url: 'https://t.me/TG_Auditor_Pro_bot'
-        });
-    } else {
-        tg.showAlert('Sharing not supported in this browser');
-    }
+    tg.openLink(`https://t.me/share/url?url=https://t.me/TG_Auditor_Pro_bot&text=${encodeURIComponent(text)}`);
 }
 
-function showMyReferrals() {
-    // Имитация данных рефералов
-    const referrals = [
-        { username: 'user1', date: '2024-01-15', status: 'active' },
-        { username: 'user2', date: '2024-01-20', status: 'pending' },
-        { username: 'user3', date: '2024-01-25', status: 'active' }
-    ];
-    
-    let message = `🏆 My Referrals\n\nTotal: ${referrals.length}\nActive: ${referrals.filter(r => r.status === 'active').length}\n\n`;
-    
-    referrals.forEach((ref, i) => {
-        message += `${i+1}. @${ref.username}\n   📅 ${ref.date} | ${ref.status === 'active' ? '✅' : '⏳'}\n\n`;
-    });
-    
-    tg.showPopup({
-        title: `${ICONS.trophy} My Referrals`,
-        message: message,
-        buttons: [
-            { type: 'default', text: 'OK' }
-        ]
-    });
-}
-
-// 8. СТАТИСТИКА
+// 7. STATISTICS
 function updateStatistics() {
     document.getElementById('totalChannels').textContent = userStats.total;
     document.getElementById('deadChannels').textContent = userStats.dead;
     document.getElementById('spamChannels').textContent = userStats.spam;
-    document.getElementById('toxicChannels').textContent = userStats.toxic;
     document.getElementById('toClean').textContent = userStats.toClean;
     
-    // Прячем дефолтное сообщение если есть статистика
-    if (userStats.total > 0) {
-        document.getElementById('statsDefault').style.display = 'none';
-        document.getElementById('statsGrid').style.display = 'grid';
-    }
+    // Show stats grid
+    document.getElementById('statsGrid').classList.remove('hidden');
+    document.getElementById('statsDefault').classList.add('hidden');
 }
 
-// 9. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-function getRandomDescription(title) {
-    const descriptions = [
-        "News and updates channel",
-        "Daily content and discussions",
-        "Community announcements",
-        "Information and education",
-        "Entertainment and fun",
-        "Professional network"
-    ];
-    return descriptions[Math.floor(Math.random() * descriptions.length)];
-}
-
+// 8. ERROR HANDLING
 function showError(message) {
     const container = document.querySelector('.container');
     container.innerHTML = `
-        <div class="error-container">
-            <div class="error-icon">⚠️</div>
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
             <h2>Error</h2>
-            <p>${message}</p>
-            <button class="btn btn-primary" onclick="location.reload()">
+            <p style="margin: 20px 0; color: #9ca3af;">${message}</p>
+            <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
                 Reload Page
             </button>
         </div>
     `;
 }
 
-// Запуск при загрузке
+// Initialize when page loads
 document.addEventListener('DOMContentLoaded', initWebApp);

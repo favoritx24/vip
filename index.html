@@ -53,19 +53,27 @@
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="requestChats()">
+            <button class="btn-primary" id="startAnalysisBtn" onclick="requestChats()" style="display: none;">
                 <i class="fas fa-play"></i> Начать анализ
             </button>
 
             <!-- Статистика -->
             <div class="stats">
                 <div class="stat-item">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-chart-bar"></i>
                     <span>Проанализировано: <b id="analyzedCount">0</b></span>
                 </div>
                 <div class="stat-item">
-                    <i class="fas fa-trash"></i>
-                    <span>Очищено: <b id="cleanedCount">0</b></span>
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Каналов: <b id="cleanedChannels">0</b></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <span>Групп: <b id="cleanedGroups">0</b></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Ботов: <b id="cleanedBots">0</b></span>
                 </div>
             </div>
         </div>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Auditor Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Заглушка пока загружается -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Загрузка...</p>
+        </div>
+        
+        <!-- Основной интерфейс -->
+        <div class="main-interface" style="display: none;" id="mainInterface">
+            <!-- Шапка -->
+            <header class="header">
+                <div class="logo">
+                    <i class="fas fa-broom"></i>
+                    <h1>Telegram Auditor</h1>
+                </div>
+                <div class="language-switcher">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+            </header>
+            
+            <!-- Статистика пользователя -->
+            <div class="user-stats" id="userStats">
+                <div class="stat-card">
+                    <i class="fas fa-hashtag"></i>
+                    <div>
+                        <h3>0</h3>
+                        <p>Каналы</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <h3>0</h3>
+                        <p>Группы</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <h3>0</h3>
+                        <p>Боты</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Кнопки анализа -->
+            <div class="analysis-section">
+                <h2><i class="fas fa-search"></i> Анализ и очистка</h2>
+                <div class="analysis-buttons">
+                    <button class="analysis-btn channel-btn" data-type="channel">
+                        <i class="fas fa-hashtag"></i>
+                        <span>Анализ каналов</span>
+                        <small>Проверить все каналы</small>
+                    </button>
+                    <button class="analysis-btn group-btn" data-type="group">
+                        <i class="fas fa-users"></i>
+                        <span>Анализ групп</span>
+                        <small>Проверить все группы</small>
+                    </button>
+                    <button class="analysis-btn bot-btn" data-type="bot">
+                        <i class="fas fa-robot"></i>
+                        <span>Анализ ботов</span>
+                        <small>Проверить всех ботов</small>
+                    </button>
+                </div>
+                
+                <button class="full-analysis-btn" id="fullAnalysis">
+                    <i class="fas fa-broom"></i>
+                    <span>Полный аудит</span>
+                    <small>Анализ всего Telegram</small>
+                </button>
+            </div>
+            
+            <!-- Результаты анализа -->
+            <div class="results-section" style="display: none;" id="resultsSection">
+                <h2><i class="fas fa-chart-bar"></i> Результаты анализа</h2>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Результаты будут здесь -->
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="clean-btn" id="cleanBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        Очистить выбранное
+                    </button>
+                    <button class="save-btn" id="saveBtn">
+                        <i class="fas fa-save"></i>
+                        Сохранить отчет
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Рекомендации -->
+            <div class="recommendations-section" id="recommendations">
+                <h2><i class="fas fa-star"></i> Рекомендуемые каналы</h2>
+                <div class="recommendations-list" id="recommendationsList">
+                    <!-- Рекомендации будут здесь -->
+                </div>
+            </div>
+            
+            <!-- Информационная панель -->
+            <div class="info-panel">
+                <div class="info-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Безопасно</h3>
+                    <p>100% безопасный анализ</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Быстро</h3>
+                    <p>Анализ за секунды</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-infinity"></i>
+                    <h3>Бесплатно</h3>
+                    <p>Всегда бесплатно</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно для выбора каналов -->
+        <div class="modal" id="channelModal" style="display: none;">
+            <div class="modal-content">
+                <h2>Выбор каналов</h2>
+                <p>Выберите каналы для анализа:</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn" id="selectAllChannels">
+                        <i class="fas fa-check-double"></i>
+                        Выбрать все каналы
+                    </button>
+                    <button class="modal-btn" id="selectAllGroups">
+                        <i class="fas fa-users"></i>
+                        Выбрать все группы
+                    </button>
+                    <button class="modal-btn" id="selectAllBots">
+                        <i class="fas fa-robot"></i>
+                        Выбрать всех ботов
+                    </button>
+                </div>
+                <button class="close-modal" id="closeModal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

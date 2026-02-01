@@ -2,7 +2,7 @@
 const tg = window.Telegram.WebApp;
 let currentUser = null;
 let currentLang = 'ru';
-let currentType = 'channels';
+let currentType = null;
 let selectedChats = [];
 let analyzedResults = [];
 
@@ -31,7 +31,11 @@ const TEXTS = {
         cleanSelected: "Очистить выбранное",
         recommendations: "Рекомендуем подписаться",
         analyzed: "Проанализировано",
-        cleaned: "Очищено"
+        cleaned: "Очищено",
+        startAnalysis: "Начать анализ",
+        selectTypeFirst: "Сначала выберите тип контента",
+        noChatsSelected: "Чаты не выбраны",
+        analysisComplete: "Анализ завершен"
     },
     en: {
         welcome: "Telegram Cleaning",
@@ -43,7 +47,11 @@ const TEXTS = {
         cleanSelected: "Clean selected",
         recommendations: "Recommended to subscribe",
         analyzed: "Analyzed",
-        cleaned: "Cleaned"
+        cleaned: "Cleaned",
+        startAnalysis: "Start analysis",
+        selectTypeFirst: "Select content type first",
+        noChatsSelected: "No chats selected",
+        analysisComplete: "Analysis complete"
     }
 };
 
@@ -57,6 +65,16 @@ function updateTexts() {
     document.querySelectorAll('.selection-card h3')[2].textContent = texts.bots;
     document.getElementById('cleanBtn').innerHTML = `<i class="fas fa-broom"></i> ${texts.cleanSelected}`;
     document.querySelector('.recommendations h3').innerHTML = `<i class="fas fa-fire"></i> ${texts.recommendations}`;
+    
+    // Обновляем текст кнопки анализа
+    const analysisBtn = document.getElementById('startAnalysisBtn');
+    if (analysisBtn) {
+        if (currentType) {
+            analysisBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysis} ${texts[currentType]}`;
+        } else {
+            analysisBtn.innerHTML = `<i class="fas fa-play"></i> ${texts.startAnalysis}`;
+        }
+    }
 }
 
 // Загрузка пользователя
@@ -79,11 +97,15 @@ function loadStats() {
     // В реальном приложении здесь был бы запрос к API
     const stats = {
         analyzed: localStorage.getItem('analyzedCount') || 0,
-        cleaned: localStorage.getItem('cleanedCount') || 0
+        cleaned_channels: localStorage.getItem('cleanedChannels') || 0,
+        cleaned_groups: localStorage.getItem('cleanedGroups') || 0,
+        cleaned_bots: localStorage.getItem('cleanedBots') || 0
     };
     
     document.getElementById('analyzedCount').textContent = stats.analyzed;
-    document.getElementById('cleanedCount').textContent = stats.cleaned;
+    document.getElementById('cleanedChannels').textContent = stats.cleaned_channels;
+    document.getElementById('cleanedGroups').textContent = stats.cleaned_groups;
+    document.getElementById('cleanedBots').textContent = stats.cleaned_bots;
 }
 
 // Загрузка рекламных каналов
@@ -104,50 +126,63 @@ function loadAdChannels() {
     ];
     
     const container = document.getElementById('adChannels');
-    container.innerHTML = adChannels.map(channel => `
-        <div class="ad-channel">
-            <i class="${channel.icon}"></i>
-            <div class="ad-info">
-                <h4>${channel.name}</h4>
-                <p>${channel.desc}</p>
+    if (container) {
+        container.innerHTML = adChannels.map(channel => `
+            <div class="ad-channel">
+                <i class="${channel.icon}"></i>
+                <div class="ad-info">
+                    <h4>${channel.name}</h4>
+                    <p>${channel.desc}</p>
+                </div>
+                <button class="ad-button" onclick="window.open('${channel.link}', '_blank')">
+                    ${currentLang === 'ru' ? 'Подписаться' : 'Subscribe'}
+                </button>
             </div>
-            <button class="ad-button" onclick="window.open('${channel.link}', '_blank')">
-                ${currentLang === 'ru' ? 'Подписаться' : 'Subscribe'}
-            </button>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 // Выбор типа контента
 function selectType(type) {
     currentType = type;
-    const typeText = TEXTS[currentLang][type];
-    document.getElementById('currentType').textContent = typeText.toLowerCase();
     
-    // Показываем экран анализа
-    document.getElementById('mainScreen').style.display = 'none';
-    document.getElementById('analysisScreen').style.display = 'block';
-}
-
-// Назад на главный экран
-function goBack() {
-    document.getElementById('mainScreen').style.display = 'block';
-    document.getElementById('analysisScreen').style.display = 'none';
-    analyzedResults = [];
-    selectedChats = [];
+    // Обновляем UI
+    document.querySelectorAll('.selection-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    
+    // Обновляем текст кнопки
+    updateTexts();
+    
+    // Показываем кнопку анализа
+    document.getElementById('startAnalysisBtn').style.display = 'flex';
+    
+    // Обновляем текст в кнопке
+    const typeText = TEXTS[currentLang][type];
+    document.getElementById('startAnalysisBtn').innerHTML = 
+        `<i class="fas fa-play"></i> ${TEXTS[currentLang].startAnalysis} ${typeText}`;
 }
 
 // Запрос чатов у Telegram
 function requestChats() {
+    if (!currentType) {
+        tg.showAlert(TEXTS[currentLang].selectTypeFirst);
+        return;
+    }
+    
     const params = {
         chat_types: getChatTypesForCurrentType(),
         allow_multiselect: true,
-        title: TEXTS[currentLang][currentType]
+        title: `${TEXTS[currentLang][currentType]} - Telegram Auditor`
     };
+    
+    console.log('Requesting chats with params:', params);
     
     tg.requestChat({
         ...params,
         onSuccess: (data) => {
+            console.log('Chats selected:', data);
             handleSelectedChats(data);
         },
         onError: (error) => {
@@ -169,60 +204,101 @@ function getChatTypesForCurrentType() {
 
 // Обработка выбранных чатов
 async function handleSelectedChats(chatData) {
+    // Преобразуем данные в массив
     selectedChats = Array.isArray(chatData) ? chatData : [chatData];
+    
+    if (selectedChats.length === 0) {
+        tg.showAlert(TEXTS[currentLang].noChatsSelected);
+        return;
+    }
+    
+    // Показываем экран анализа
+    document.getElementById('mainScreen').style.display = 'none';
+    document.getElementById('analysisScreen').style.display = 'block';
+    
+    // Устанавливаем тип
+    const typeText = TEXTS[currentLang][currentType];
+    document.getElementById('currentType').textContent = typeText.toLowerCase();
     
     // Показываем прогресс
     updateProgress(0);
     
     // Анализируем каждый чат
+    analyzedResults = [];
+    
     for (let i = 0; i < selectedChats.length; i++) {
         const chat = selectedChats[i];
-        await analyzeChat(chat);
-        updateProgress(((i + 1) / selectedChats.length) * 100);
+        const result = await analyzeChat(chat);
+        analyzedResults.push(result);
+        
+        // Обновляем прогресс
+        const progress = ((i + 1) / selectedChats.length) * 100;
+        updateProgress(progress);
+        
+        // Показываем промежуточные результаты
+        if (i % 5 === 0 || i === selectedChats.length - 1) {
+            showPartialResults();
+        }
+        
+        // Небольшая задержка для анимации
+        await sleep(50);
     }
     
-    // Показываем результаты
+    // Показываем финальные результаты
     showResults();
     updateProgress(100);
+    
+    // Активируем кнопку очистки
+    document.getElementById('cleanBtn').disabled = false;
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Анализ чата
 async function analyzeChat(chat) {
-    // Симуляция анализа
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Симуляция анализа с разным временем для разных типов
+    const analysisTime = Math.random() * 300 + 100;
+    await sleep(analysisTime);
     
-    const statuses = ['active', 'inactive', 'dead', 'toxic'];
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+    // Определяем тип чата
+    let chatType = 'unknown';
+    if (chat.type === 'channel') chatType = 'channel';
+    else if (chat.type === 'group') chatType = 'group';
+    else if (chat.type === 'bot') chatType = 'bot';
     
-    const result = {
+    // Генерируем случайный статус с разными вероятностями
+    const rand = Math.random();
+    let status, icon, description;
+    
+    if (rand < 0.3) {
+        status = 'active';
+        icon = 'fa-check-circle';
+        description = currentLang === 'ru' ? 'Активный, можно оставить' : 'Active, can keep';
+    } else if (rand < 0.6) {
+        status = 'inactive';
+        icon = 'fa-clock';
+        description = currentLang === 'ru' ? 'Неактивный более 1 месяца' : 'Inactive for more than 1 month';
+    } else if (rand < 0.8) {
+        status = 'dead';
+        icon = 'fa-skull-crossbones';
+        description = currentLang === 'ru' ? 'Неактивный более 6 месяцев' : 'Inactive for more than 6 months';
+    } else {
+        status = 'toxic';
+        icon = 'fa-radiation';
+        description = currentLang === 'ru' ? 'Токсичный контент' : 'Toxic content';
+    }
+    
+    return {
         id: chat.id || Math.random(),
-        title: chat.title || `Чат ${analyzedResults.length + 1}`,
-        type: chat.type || currentType.slice(0, -1),
-        status: randomStatus,
-        description: getStatusDescription(randomStatus)
+        title: chat.title || `${TEXTS[currentLang][currentType]} ${analyzedResults.length + 1}`,
+        type: chatType,
+        status: status,
+        icon: icon,
+        description: description,
+        selected: status === 'dead' || status === 'toxic'
     };
-    
-    analyzedResults.push(result);
-    return result;
-}
-
-function getStatusDescription(status) {
-    const texts = {
-        ru: {
-            active: "Активный, можно оставить",
-            inactive: "Неактивный более 1 месяца",
-            dead: "Неактивный более 6 месяцев",
-            toxic: "Токсичный контент"
-        },
-        en: {
-            active: "Active, can keep",
-            inactive: "Inactive for more than 1 month",
-            dead: "Inactive for more than 6 months",
-            toxic: "Toxic content"
-        }
-    };
-    
-    return texts[currentLang][status] || texts[currentLang].active;
 }
 
 // Обновление прогресс-бара
@@ -230,13 +306,40 @@ function updateProgress(percent) {
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     
-    progressBar.style.width = `${percent}%`;
-    progressText.textContent = `${Math.round(percent)}%`;
+    if (progressBar && progressText) {
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${Math.round(percent)}%`;
+        
+        // Анимация заполнения
+        progressBar.style.transition = 'width 0.3s ease';
+    }
 }
 
-// Показ результатов
+// Показ промежуточных результатов
+function showPartialResults() {
+    const container = document.getElementById('resultsContainer');
+    if (!container) return;
+    
+    const recentResults = analyzedResults.slice(-5);
+    
+    container.innerHTML = recentResults.map((result, index) => `
+        <div class="result-item ${result.status}">
+            <i class="fas ${result.icon}"></i>
+            <div class="result-info">
+                <div class="result-title">${result.title}</div>
+                <div class="result-desc">${result.description}</div>
+            </div>
+            <input type="checkbox" class="result-checkbox" 
+                   onchange="toggleSelection(${analyzedResults.length - recentResults.length + index})"
+                   ${result.selected ? 'checked' : ''}>
+        </div>
+    `).join('');
+}
+
+// Показ окончательных результатов
 function showResults() {
     const container = document.getElementById('resultsContainer');
+    if (!container) return;
     
     if (analyzedResults.length === 0) {
         container.innerHTML = `
@@ -251,31 +354,52 @@ function showResults() {
         return;
     }
     
-    container.innerHTML = analyzedResults.map((result, index) => `
-        <div class="result-item ${result.status}">
-            <i class="fas ${getIconForStatus(result.status)}"></i>
-            <div class="result-info">
-                <div class="result-title">${result.title}</div>
-                <div class="result-desc">${result.description}</div>
-            </div>
-            <input type="checkbox" class="result-checkbox" 
-                   onchange="toggleSelection(${index})"
-                   ${result.status === 'dead' || result.status === 'toxic' ? 'checked' : ''}>
-        </div>
-    `).join('');
+    // Группируем по статусу
+    const activeChats = analyzedResults.filter(r => r.status === 'active').length;
+    const inactiveChats = analyzedResults.filter(r => r.status === 'inactive').length;
+    const deadChats = analyzedResults.filter(r => r.status === 'dead').length;
+    const toxicChats = analyzedResults.filter(r => r.status === 'toxic').length;
     
-    // Активируем кнопку очистки
-    document.getElementById('cleanBtn').disabled = false;
-}
-
-function getIconForStatus(status) {
-    switch(status) {
-        case 'active': return 'fa-check-circle';
-        case 'inactive': return 'fa-clock';
-        case 'dead': return 'fa-skull-crossbones';
-        case 'toxic': return 'fa-radiation';
-        default: return 'fa-question-circle';
-    }
+    container.innerHTML = `
+        <div class="summary">
+            <h3>${currentLang === 'ru' ? 'Итоги анализа:' : 'Analysis summary:'}</h3>
+            <div class="summary-stats">
+                <div class="summary-item active">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${currentLang === 'ru' ? 'Активные:' : 'Active:'} ${activeChats}</span>
+                </div>
+                <div class="summary-item inactive">
+                    <i class="fas fa-clock"></i>
+                    <span>${currentLang === 'ru' ? 'Неактивные:' : 'Inactive:'} ${inactiveChats}</span>
+                </div>
+                <div class="summary-item dead">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <span>${currentLang === 'ru' ? 'Мертвые:' : 'Dead:'} ${deadChats}</span>
+                </div>
+                <div class="summary-item toxic">
+                    <i class="fas fa-radiation"></i>
+                    <span>${currentLang === 'ru' ? 'Токсичные:' : 'Toxic:'} ${toxicChats}</span>
+                </div>
+            </div>
+        </div>
+        <div class="results-list">
+            ${analyzedResults.map((result, index) => `
+                <div class="result-item ${result.status}">
+                    <i class="fas ${result.icon}"></i>
+                    <div class="result-info">
+                        <div class="result-title">${result.title}</div>
+                        <div class="result-desc">${result.description}</div>
+                    </div>
+                    <input type="checkbox" class="result-checkbox" 
+                           onchange="toggleSelection(${index})"
+                           ${result.selected ? 'checked' : ''}>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    // Показываем уведомление о завершении
+    tg.showAlert(TEXTS[currentLang].analysisComplete);
 }
 
 // Переключение выбора
@@ -296,21 +420,47 @@ function cleanSelected() {
     
     // Обновляем статистику
     const currentAnalyzed = parseInt(localStorage.getItem('analyzedCount') || 0);
-    const currentCleaned = parseInt(localStorage.getItem('cleanedCount') || 0);
+    let currentCleanedChannels = parseInt(localStorage.getItem('cleanedChannels') || 0);
+    let currentCleanedGroups = parseInt(localStorage.getItem('cleanedGroups') || 0);
+    let currentCleanedBots = parseInt(localStorage.getItem('cleanedBots') || 0);
+    
+    // Считаем по типам
+    const channelsCleaned = selected.filter(r => r.type === 'channel').length;
+    const groupsCleaned = selected.filter(r => r.type === 'group').length;
+    const botsCleaned = selected.filter(r => r.type === 'bot').length;
     
     localStorage.setItem('analyzedCount', currentAnalyzed + analyzedResults.length);
-    localStorage.setItem('cleanedCount', currentCleaned + selected.length);
+    localStorage.setItem('cleanedChannels', currentCleanedChannels + channelsCleaned);
+    localStorage.setItem('cleanedGroups', currentCleanedGroups + groupsCleaned);
+    localStorage.setItem('cleanedBots', currentCleanedBots + botsCleaned);
     
     // Показываем уведомление
     tg.showAlert(currentLang === 'ru' ? 
-        `Успешно очищено ${selected.length} чатов!` :
-        `Successfully cleaned ${selected.length} chats!`);
+        `Успешно очищено: ${selected.length} чатов\n• Каналов: ${channelsCleaned}\n• Групп: ${groupsCleaned}\n• Ботов: ${botsCleaned}` :
+        `Successfully cleaned: ${selected.length} chats\n• Channels: ${channelsCleaned}\n• Groups: ${groupsCleaned}\n• Bots: ${botsCleaned}`);
     
     // Обновляем статистику на экране
     loadStats();
     
     // Возвращаем на главный экран
     goBack();
+}
+
+// Назад на главный экран
+function goBack() {
+    document.getElementById('mainScreen').style.display = 'block';
+    document.getElementById('analysisScreen').style.display = 'none';
+    analyzedResults = [];
+    selectedChats = [];
+    currentType = null;
+    
+    // Сбрасываем активный выбор
+    document.querySelectorAll('.selection-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    
+    // Скрываем кнопку анализа
+    document.getElementById('startAnalysisBtn').style.display = 'none';
 }
 
 // Инициализация при загрузке

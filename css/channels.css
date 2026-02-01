@@ -1,0 +1,198 @@
+/* ============================================
+   ФАЙЛ: css/channels.css
+   Стили для работы с каналами
+   ============================================ */
+
+.channels-section {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.section-desc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.channels-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-select-all,
+.btn-deselect-all {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.btn-select-all:hover {
+    background: #3498db;
+    color: white;
+}
+
+.btn-deselect-all:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.selected-count {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+/* Контейнер каналов */
+.channels-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafafa;
+}
+
+/* Загрузка */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+}
+
+/* Элемент канала */
+.channel-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 5px 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.channel-item:hover {
+    border-color: #3498db;
+    background: #f8f9fa;
+}
+
+.channel-item.selected {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+/* Чекбокс канала */
+.channel-checkbox {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Информация о канале */
+.channel-info {
+    flex: 1;
+    min-width: 0; /* Чтобы текст не вылазил */
+}
+
+.channel-name {
+    font-weight: 600;
+    font-size: 13px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.channel-members {
+    font-size: 11px;
+    color: #7f8c8d;
+}
+
+/* Действия с каналом */
+.channel-actions {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.btn-channel-action {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: white;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+.btn-leave {
+    color: #e74c3c;
+    border-color: #f5b7b1;
+}
+
+.btn-leave:hover {
+    background: #fdedec;
+    border-color: #e74c3c;
+}
+
+.btn-block {
+    color: #f39c12;
+    border-color: #f8c471;
+}
+
+.btn-block:hover {
+    background: #fef9e7;
+    border-color: #f39c12;
+}
+
+.btn-delete {
+    color: #95a5a6;
+    border-color: #d5dbdb;
+}
+
+.btn-delete:hover {
+    background: #f8f9f9;
+    border-color: #95a5a6;
+}
+
+/* Кнопки в секции каналов */
+.channels-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Полоса прокрутки */
+.channels-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.channels-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.channels-container::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
+    border-radius: 3px;
+}
+
+.channels-container::-webkit-scrollbar-thumb:hover {
+    background: #95a5a6;
+}

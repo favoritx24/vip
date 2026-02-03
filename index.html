@@ -1,104 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Auditor Pro</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-    </style>
+    <script type="text/javascript">
+        window.location.href = "https://wb247.liveblog365.com/vip/";
+    </script>
+    <title>Перенаправление...</title>
 </head>
 <body>
-    <div id="app" class="p-4 max-w-md mx-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-2xl font-bold italic">TG AUDITOR</h1>
-            <div class="glass px-3 py-1 rounded-full text-xs text-blue-400">PRO 2026</div>
-        </div>
-
-        <!-- Stats Card -->
-        <div class="glass rounded-3xl p-6 mb-6">
-            <div class="text-gray-400 text-sm mb-1">Цифровой вес</div>
-            <div class="text-4xl font-black text-white">4.2 GB</div>
-            <div class="mt-4 flex gap-2">
-                <span class="bg-red-500/20 text-red-400 text-[10px] px-2 py-1 rounded">12 Мертвых</span>
-                <span class="bg-yellow-500/20 text-yellow-400 text-[10px] px-2 py-1 rounded">5 Дубликатов</span>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <button @click="requestChats('channel')" class="glass p-4 rounded-2xl flex flex-col items-center hover:bg-blue-600 transition">
-                <svg class="w-8 h-8 mb-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5.882V19.297A1.769 1.769 0 019.231 21.066L3.15 21.066A1.15 1.15 0 012 19.916V5.882c0-.635.515-1.15 1.15-1.15h6.081c.977 0 1.769.792 1.769 1.769z"></path></svg>
-                <span class="text-xs font-semibold">Каналы</span>
-            </button>
-            <button @click="requestChats('group')" class="glass p-4 rounded-2xl flex flex-col items-center hover:bg-blue-600 transition">
-                <svg class="w-8 h-8 mb-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-xs font-semibold">Группы</span>
-            </button>
-        </div>
-
-        <!-- Results / Loading -->
-        <div v-if="loading" class="text-center py-10">
-            <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-            <p class="mt-4 text-gray-400">ИИ анализирует подписки...</p>
-        </div>
-
-        <!-- Ads Section -->
-        <div class="mt-10">
-            <h3 class="text-sm font-bold text-gray-500 uppercase mb-4 tracking-widest">Рекомендуемое</h3>
-            <div v-for="ad in ads" :key="ad.link" class="glass rounded-2xl p-3 flex items-center gap-4 mb-3">
-                <img :src="ad.img" class="w-12 h-12 rounded-xl object-cover">
-                <div class="flex-1">
-                    <div class="text-sm font-bold">{{ad.title}}</div>
-                    <div class="text-[10px] text-gray-400">Официальный партнер</div>
-                </div>
-                <a :href="ad.link" class="bg-white text-black px-4 py-2 rounded-full text-xs font-black">Join</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const { createApp, ref, onMounted } = Vue;
-        const tg = window.Telegram.WebApp;
-
-        createApp({
-            setup() {
-                const loading = ref(false);
-                const ads = ref([]);
-
-                onMounted(() => {
-                    tg.expand();
-                    // Загрузка рекламы с бэкенда
-                    fetch(`https://твой-ip-сервера:8000/api/ads?lang=ru`)
-                        .then(r => r.json())
-                        .then(data => ads.value = data);
-                });
-
-                const requestChats = (type) => {
-                    tg.showPopup({
-                        title: 'Аудит безопасности',
-                        message: `Выбрать все ${type === 'channel' ? 'каналы' : 'группы'} для глубокого анализа?`,
-                        buttons: [{id: 'ok', type: 'default', text: 'Выбрать все'}, {type: 'cancel'}]
-                    }, (id) => {
-                        if (id === 'ok') {
-                            // Системный селектор Telegram
-                            tg.requestChat({
-                                chat_types: [type],
-                                allow_multiselect: true
-                            });
-                        }
-                    });
-                };
-
-                return { loading, ads, requestChats };
-            }
-        }).mount('#app');
-    </script>
 </body>
 </html>
